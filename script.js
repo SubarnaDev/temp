@@ -630,11 +630,13 @@ if ('serviceWorker' in navigator) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: input })
       });
-  
-      const data = await res.json();
+    
+      const text = await res.text(); // safer than .json()
+      const data = JSON.parse(text);
       responseBox.textContent = data?.response || 'No response received.';
     } catch (err) {
-      responseBox.textContent = 'Error contacting assistant.';
+      responseBox.textContent = 'Assistant error: ' + err.message;
       console.error(err);
     }
+    
   }
