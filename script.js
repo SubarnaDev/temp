@@ -17,6 +17,37 @@ if ('serviceWorker' in navigator) {
   let balanceHistory = [];
   let balanceChart = null;
   let recurringIntervals = [];
+
+  let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallButton(); // Show your custom install button
+  logMessage('📲 App can be installed.');
+});
+
+function showInstallButton() {
+  const box = document.getElementById('install-box');
+  if (box) box.style.display = 'block';
+}
+
+function installApp() {
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+
+  deferredPrompt.userChoice.then(choiceResult => {
+    if (choiceResult.outcome === 'accepted') {
+      logMessage('✅ App installed');
+    } else {
+      logMessage('❌ Installation dismissed');
+    }
+    deferredPrompt = null;
+    document.getElementById('install-box').style.display = 'none';
+  });
+}
+
   
   // Generate new wallet
   function generateKeypair() {
