@@ -283,7 +283,11 @@ function stopLiveMonitoring() {
       })
       .catch(err => {
         logMessage('Transaction failed: ' + err, 'error');
+        if (!navigator.onLine) {
+          queueTransaction({ destination, amount, memo });
+        }
       });
+      
   }
   
   // Recurring payment (interval in seconds)
@@ -533,4 +537,60 @@ function scanQRCode() {
       }
     }
   );
+}
+
+
+
+
+// --- Offline Transaction Queue ---
+function queueTransaction(tx) {
+  const queue = JSON.parse(localStorage.getItem('txQueue') || '[]');
+  queue.push(tx);
+  localStorage.setItem('txQueue', JSON.stringify(queue));
+  logMessage('📦 Transaction queued offline.');
+  showToast('📦 Transaction saved. Will resend when online.');
+}
+
+window.addEventListener('online', tryResendingQueuedTxs);
+
+async function tryResendingQueuedTxs() {
+  const queue = JSON.parse(localStorage.getItem('txQueue') || '[]');
+  if (queue.length === 0 || !currentKeypair) return;
+
+  logMessage(`🔄 Resending ${queue.length} queued transaction(s)...`);
+  showToast(`🔄 Replaying ${queue.length} offline transaction(s)...`);
+
+
+  for (const tx of queue) {
+    try {
+      await sendQueuedTransaction(tx.destination, tx.amount, tx.memo);
+    } catch (e) {
+      logMessage('❌ Failed to resend transaction: ' + e.message, 'error');
+    }
+  }
+
+  localStorage.removeItem('txQueue');
+  logMessage('✅ All queued transactions processed.');
+  showToast('✅ All offline transactions sent!');
+}
+
+async function sendQueuedTransaction(destination, amount, memo = '') {
+  const account = await server.loadAccount(currentKeypair.publicKey());
+  const tx = new StellarSdk.TransactionBuilder(account, {
+    fee: StellarSdk.BASE_FEE,
+    networkPassphrase: StellarSdk.Networks.TESTNET
+  })
+    .addOperation(StellarSdk.Operation.payment({
+      destination,
+      asset: StellarSdk.Asset.native(),
+      amount
+    }))
+    .addMemo(StellarSdk.Memo.text(memo))
+    .setTimeout(30)
+    .build();
+
+  tx.sign(currentKeypair);
+  const result = await server.submitTransaction(tx);
+  logMessage(`✅ Queued TX sent: ${result.hash}`);
+  saveTransaction(result.hash, destination, amount);
 }
