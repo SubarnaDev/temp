@@ -1,3 +1,16 @@
+function showToast(message) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 5000);
+}
+
+
 // Add this in script.js or utils.js
 document.getElementById("encrypt-pass").addEventListener("input", e => {
   const strengthEl = document.getElementById("pass-strength");

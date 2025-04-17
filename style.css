@@ -146,3 +146,21 @@ body {
     color: #ccc;
   }
   
+
+  #toast-container .toast {
+    background-color: #1a73e8;
+    color: #fff;
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s ease, fadeOut 0.5s ease 4.5s forwards;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(100%); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(100%); }
+  }
+  

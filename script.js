@@ -71,29 +71,120 @@ if ('serviceWorker' in navigator) {
   }
   
   // Login to existing wallet
-  async function loginWallet() {
-    const input = document.getElementById('login-secret').value.trim();
+  // async function loginWallet() {
+  //   const input = document.getElementById('login-secret').value.trim();
   
-    try {
-      let secret;
-      if (input.length > 56) {
-        secret = await decryptSecretKey(input);
-      } else {
-        secret = input;
-      }
-      const keypair = StellarSdk.Keypair.fromSecret(secret);
-      currentKeypair = keypair;
-      document.getElementById('public-key').textContent = keypair.publicKey();
-      document.getElementById('secret-key').textContent = secret;
-      toggleWalletActions(true);
-      checkBalance();
-      loadTransactionHistory();
-      logMessage('✅ Logged in successfully.');
-    } catch (e) {
-      logMessage('❌ Invalid secret key or password.', 'error');
-      console.error(e);
+  //   try {
+  //     let secret;
+  //     if (input.length > 56) {
+  //       secret = await decryptSecretKey(input);
+  //     } else {
+  //       secret = input;
+  //     }
+  //     const keypair = StellarSdk.Keypair.fromSecret(secret);
+  //     currentKeypair = keypair;
+  //     document.getElementById('public-key').textContent = keypair.publicKey();
+  //     document.getElementById('secret-key').textContent = secret;
+  //     toggleWalletActions(true);
+  //     checkBalance();
+  //     loadTransactionHistory();
+  //     logMessage('✅ Logged in successfully.');
+
+  //   } catch (e) {
+  //     logMessage('❌ Invalid secret key or password.', 'error');
+  //     console.error(e);
+  //   }
+  // }
+
+
+
+
+
+// Login to existing wallet
+async function loginWallet() {
+  const input = document.getElementById('login-secret').value.trim();
+
+  try {
+    let secret;
+    if (input.length > 56) {
+      secret = await decryptSecretKey(input);
+    } else {
+      secret = input;
     }
+
+    const keypair = StellarSdk.Keypair.fromSecret(secret);
+    currentKeypair = keypair;
+
+    document.getElementById('public-key').textContent = keypair.publicKey();
+    document.getElementById('secret-key').textContent = secret;
+
+    toggleWalletActions(true);
+    checkBalance();
+    loadTransactionHistory();
+    startLiveMonitoring();      // 🔴 Add here
+    checkDueLoans();            // ✅ Already in your code
+    logMessage('✅ Logged in successfully.');
+    
+  } catch (e) {
+    logMessage('❌ Invalid secret key or password.', 'error');
+    console.error(e);
   }
+}
+
+
+
+
+
+
+
+
+// --- Real-Time Stellar Account Monitoring ---
+let streamClose = null;
+
+function startLiveMonitoring() {
+  if (!currentKeypair) return;
+
+  if (streamClose) streamClose();
+
+  streamClose = server.operations()
+    .forAccount(currentKeypair.publicKey())
+    .cursor('now')
+    .stream({
+      onmessage: (operation) => {
+        if (operation.type === 'payment') {
+          const isIncoming = operation.to === currentKeypair.publicKey();
+          const msg = isIncoming
+            ? `📥 Incoming payment: ${operation.amount} XLM from ${operation.from.slice(0, 6)}...`
+            : `📤 Outgoing payment: ${operation.amount} XLM to ${operation.to.slice(0, 6)}...`;
+
+          showToast(msg); // ✅ Display toast
+          logMessage(msg, 'info');
+          checkBalance();
+          loadTransactionHistory();
+        }
+      },
+      onerror: (error) => {
+        logMessage('⚠️ Live monitoring error. Reconnecting...', 'error');
+        console.error('Stream error', error);
+        setTimeout(startLiveMonitoring, 5000);
+      }
+    });
+
+  logMessage('📡 Real-time monitoring started.');
+}
+
+
+function stopLiveMonitoring() {
+  if (streamClose) {
+    streamClose();
+    streamClose = null;
+    logMessage('📴 Monitoring stopped.');
+  }
+}
+
+
+
+  
   
   // Save encrypted wallet to localStorage
   function saveWalletToStorage(pubKey, password) {
