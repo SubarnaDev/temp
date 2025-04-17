@@ -167,6 +167,15 @@ async function loginWallet() {
 
 
 
+if ('Notification' in window && Notification.permission !== 'granted') {
+  Notification.requestPermission().then(permission => {
+    logMessage("🔔 Notification permission: " + permission);
+  });
+}
+
+
+
+
 
 
 // --- Real-Time Stellar Account Monitoring ---
@@ -463,15 +472,36 @@ function sendMicroloan() {
     });
 }
 
+// function checkDueLoans() {
+//   const today = new Date().toISOString().split('T')[0];
+//   const loans = JSON.parse(localStorage.getItem('microloansSent') || '[]');
+//   loans.forEach(loan => {
+//     if (loan.dueDate <= today) {
+//       logMessage(`\u23F0 Loan to ${loan.to.slice(0, 6)}... is due today!`, 'info');
+//     }
+//   });
+// }
+
+
 function checkDueLoans() {
   const today = new Date().toISOString().split('T')[0];
   const loans = JSON.parse(localStorage.getItem('microloansSent') || '[]');
+
   loans.forEach(loan => {
     if (loan.dueDate <= today) {
-      logMessage(`\u23F0 Loan to ${loan.to.slice(0, 6)}... is due today!`, 'info');
+      const msg = `⏰ Loan to ${loan.to.slice(0, 6)}... is due today!`;
+      logMessage(msg, 'info');
+      showToast(msg);
+      if (Notification.permission === "granted") {
+        new Notification("📢 Loan Due Reminder", {
+          body: msg,
+          icon: "https://cdn-icons-png.flaticon.com/512/167/167707.png"
+        });
+      }
     }
   });
 }
+
 
 // --- Donation Mode ---
 let donationMode = false;
@@ -593,4 +623,34 @@ async function sendQueuedTransaction(destination, amount, memo = '') {
   const result = await server.submitTransaction(tx);
   logMessage(`✅ Queued TX sent: ${result.hash}`);
   saveTransaction(result.hash, destination, amount);
+}
+
+function applyPersona() {
+  const value = document.getElementById("persona-select").value;
+
+  switch (value) {
+    case "remittance":
+      document.getElementById("dest-address").value = "GDRXE2BQUC3AZMLA..." // dummy public key
+      document.getElementById("amount").value = "50";
+      document.getElementById("memo").value = "Remittance to family";
+      showToast("🌍 Remittance flow ready — just hit Send!");
+      break;
+
+    case "freelancer":
+      document.getElementById("request-amount").value = "100";
+      generateQRCode();
+      showToast("💼 Freelancer: QR code ready to request payment!");
+      break;
+
+    case "ngo":
+      document.getElementById("donationToggle").checked = true;
+      toggleDonationMode();
+      generateDonationQRCode();
+      showToast("🤝 NGO Donation QR generated.");
+      break;
+
+    default:
+      showToast("Persona cleared.");
+      break;
+  }
 }

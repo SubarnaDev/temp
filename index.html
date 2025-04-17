@@ -25,12 +25,80 @@
 
 
 
+<script type="module">
+  // 1. Import Firebase SDKs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+  // 2. Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCItVsh6S3_cUiYXm2GPa6fYnS9O5KIXhk",
+    authDomain: "basicpayplus-37644.firebaseapp.com",
+    projectId: "basicpayplus-37644",
+    storageBucket: "basicpayplus-37644.firebasestorage.app",
+    messagingSenderId: "1035414866927",
+    appId: "1:1035414866927:web:223c2c53e3af1a8144841a"
+  };
+
+  // 3. Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 4. Example Save Function (replace "pubKey123" and encrypted data)
+  window.saveToCloud = async function (pubKey) {
+    const encryptedData = localStorage.getItem('encryptedKey');
+    if (!encryptedData) {
+      alert('No encrypted wallet found.');
+      return;
+    }
+
+    try {
+      await setDoc(doc(db, "wallets", pubKey), {
+        encryptedKey: JSON.parse(encryptedData),
+        timestamp: Date.now()
+      });
+      alert('☁️ Wallet saved to cloud!');
+    } catch (err) {
+      alert('Save failed: ' + err.message);
+    }
+  };
+
+  // 5. Example Load Function
+  window.loadCloudWallet = async function () {
+    const pubKey = prompt("Enter your public key:");
+    if (!pubKey) return;
+
+    try {
+      const docSnap = await getDoc(doc(db, "wallets", pubKey));
+      if (docSnap.exists()) {
+        localStorage.setItem('encryptedKey', JSON.stringify(docSnap.data().encryptedKey));
+        alert("☁️ Wallet loaded. Now log in with your password.");
+      } else {
+        alert("No wallet found in cloud.");
+      }
+    } catch (err) {
+      alert("Load failed: " + err.message);
+    }
+  };
+</script>
+
+
 </head>
 <body>
   <div class="container">
     <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
 
     <h1>💫 BasicPay+</h1>
+    <div style="margin: 10px 0;">
+      <label for="persona-select"><strong>🎭 Choose Demo Persona:</strong></label>
+      <select id="persona-select" onchange="applyPersona()">
+        <option value="">-- Select a Persona --</option>
+        <option value="remittance">🌍 Remittance Worker</option>
+        <option value="freelancer">💼 Freelancer</option>
+        <option value="ngo">🤝 NGO Collector</option>
+      </select>
+    </div>
+    
     <div id="pitch">
       <h2>🚀 Welcome to BasicPay+</h2>
       <p>
@@ -67,6 +135,8 @@
       <input type="password" id="login-secret" placeholder="Enter Secret Key or Password">
       <button onclick="loginWallet()">Login</button>
       <!-- <button onclick="loadCloudWallet()">☁️ Load Cloud Wallet</button> -->
+      <button onclick="saveToCloud(document.getElementById('public-key').textContent)">☁️ Save Wallet to Cloud</button>
+      <button onclick="loadCloudWallet()">☁️ Load Wallet from Cloud</button>
 
     </div>
 
