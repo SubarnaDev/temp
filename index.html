@@ -14,10 +14,34 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script>
+
 </head>
 <body>
   <div class="container">
     <h1>💫 BasicPay+</h1>
+    <div id="pitch">
+      <h2>🚀 Welcome to BasicPay+</h2>
+      <p>
+        BasicPay+ is a blazing-fast Stellar wallet built for gig workers, small merchants, and remote communities. 
+        It features smart payments, encrypted wallet storage, recurring transfers, and even microloans — all in one lightweight web app.
+      </p>
+      <ul>
+        <li>✅ Generate & encrypt your wallet</li>
+        <li>💸 Send payments or schedule recurring ones</li>
+        <li>📎 Request money with QR codes</li>
+        <li>🤖 Ask BasicBot for help at any time</li>
+        <li>📊 View balance charts & transaction history</li>
+        <li>🌍 Offline support for limited-connectivity zones</li>
+      </ul>
+      <p><strong>🔁 Try it live — no signup needed. Fund your wallet using Stellar Friendbot and start transacting!</strong></p>
+      <hr>
+    </div>
+    
 
     <div id="wallet-section">
       <button onclick="generateKeypair()">Generate Wallet</button>
@@ -32,6 +56,8 @@
       <h3>🔐 Load Existing Wallet</h3>
       <input type="password" id="login-secret" placeholder="Enter Secret Key or Password">
       <button onclick="loginWallet()">Login</button>
+      <button onclick="loadCloudWallet()">☁️ Load Cloud Wallet</button>
+
     </div>
 
     <div id="wallet-actions" style="display:none;">

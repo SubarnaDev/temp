@@ -128,3 +128,21 @@ body {
     color: #90caf9;
   }
   
+
+
+
+  #pitch {
+    background-color: #eef3fd;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+  }
+  #pitch ul {
+    padding-left: 20px;
+  }
+  .dark-mode #pitch {
+    background-color: #2a2a2a;
+    color: #ccc;
+  }
+  

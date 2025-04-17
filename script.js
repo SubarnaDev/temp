@@ -59,11 +59,16 @@ if ('serviceWorker' in navigator) {
     try {
       await encryptSecretKey(currentKeypair.secret(), pass);
       saveWalletToStorage(currentKeypair.publicKey(), pass);
+
+      await saveWalletToCloud(currentKeypair.publicKey(), pass); // Firebase cloud sync
+
       logMessage('🔒 Key encrypted and saved locally.');
     } catch (e) {
       logMessage('Encryption failed.', 'error');
       console.error(e);
     }
+
+    
   }
   
   // Login to existing wallet
@@ -378,3 +383,16 @@ function generateDonationQRCode() {
   
 
 
+async function loadCloudWallet() {
+  try {
+    const cloudWallet = await loadWalletFromCloud();
+    if (cloudWallet) {
+      document.getElementById('login-secret').value = cloudWallet.encryptedKey;
+      logMessage(`☁️ Loaded wallet from Firebase: ${cloudWallet.pubKey}`);
+    } else {
+      logMessage('No wallet found in Firebase.', 'error');
+    }
+  } catch (err) {
+    logMessage('❌ Firebase load failed: ' + err.message, 'error');
+  }
+}
