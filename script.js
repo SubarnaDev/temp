@@ -622,15 +622,19 @@ if ('serviceWorker' in navigator) {
       return;
     }
   
-    // Simulated responses
-    const mockResponses = {
-      send: "To send XLM, enter the recipient's public key, amount, and press Send.",
-      qr: "Use the 'Request Payment' section to generate a QR code someone can scan to pay you.",
-      recurring: "Recurring payments send XLM at set intervals. Fill in the fields and press 'Start Recurring'.",
-      balance: "Your balance is shown in XLM after you log in. A chart tracks changes over time."
-    };
+    responseBox.textContent = 'Thinking... 🤔';
   
-    const keyword = Object.keys(mockResponses).find(k => input.toLowerCase().includes(k));
-    responseBox.textContent = mockResponses[keyword] || "I'm here to help! Try asking about sending, QR codes, or recurring payments.";
+    try {
+      const res = await fetch('/api/qroq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: input })
+      });
+  
+      const data = await res.json();
+      responseBox.textContent = data?.response || 'No response received.';
+    } catch (err) {
+      responseBox.textContent = 'Error contacting assistant.';
+      console.error(err);
+    }
   }
-  
