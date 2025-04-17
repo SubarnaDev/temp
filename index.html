@@ -62,12 +62,27 @@
       <button onclick="generateQRCode()">Generate QR</button>
       <div id="qrcode"></div>
 
+      <h4>💸 Microloans</h4>
+  <input type="text" id="loan-recipient" placeholder="Recipient Public Key">
+  <input type="text" id="loan-amount" placeholder="Loan Amount (XLM)">
+  <input type="date" id="loan-due" placeholder="Due Date">
+  <input type="text" id="loan-memo" placeholder="Memo (Optional)">
+  <button onclick="sendMicroloan()">Send Loan</button>
+
+  <h4>📥 Donations</h4>
+  <label><input type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable Donation Mode</label>
+  <button onclick="generateDonationQRCode()">Generate Donation QR</button>
+  <div id="donation-qr"></div>
+
+
       <h4>📊 Balance Chart</h4>
       <canvas id="balanceChart" height="200"></canvas>
 
       <h4>📑 Transaction History</h4>
       <div id="transaction-history"></div>
     </div>
+
+    
 
     <div style="text-align: right;">
       <label>
