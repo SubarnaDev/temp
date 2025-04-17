@@ -155,6 +155,8 @@ async function loginWallet() {
     startLiveMonitoring();      // 🔴 Add here
     checkDueLoans();            // ✅ Already in your code
     logMessage('✅ Logged in successfully.');
+    renderLoanLedger();
+
     
   } catch (e) {
     logMessage('❌ Invalid secret key or password.', 'error');
@@ -466,6 +468,8 @@ function sendMicroloan() {
       sent.unshift(loan);
       localStorage.setItem('microloansSent', JSON.stringify(sent));
       logMessage(`\uD83D\uDCB8 Loan sent successfully. Due: ${dueDate}`);
+      renderLoanLedger();
+
     })
     .catch(err => {
       logMessage('Loan transaction failed: ' + err, 'error');
@@ -501,6 +505,60 @@ function checkDueLoans() {
     }
   });
 }
+
+function renderLoanLedger() {
+  const container = document.getElementById('loan-ledger');
+  const loans = JSON.parse(localStorage.getItem('microloansSent') || '[]');
+  container.innerHTML = '';
+
+  if (loans.length === 0) {
+    container.innerHTML = '<p>No loans issued yet.</p>';
+    return;
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+
+  loans.forEach((loan, idx) => {
+    const isRepaid = loan.repaid;
+    const isOverdue = loan.dueDate < today && !isRepaid;
+
+    const row = document.createElement('div');
+    row.style.marginBottom = '10px';
+    row.style.padding = '8px';
+    row.style.border = '1px solid #ccc';
+    row.style.borderRadius = '6px';
+    row.style.backgroundColor = isRepaid ? '#d4edda' : (isOverdue ? '#f8d7da' : '#fff');
+
+    row.innerHTML = `
+      <p><strong>To:</strong> ${loan.to.slice(0, 6)}... 
+         <strong>Amount:</strong> ${loan.amount} XLM 
+         <strong>Due:</strong> ${loan.dueDate}</p>
+      <p>Status: <strong>${isRepaid ? '✅ Repaid' : isOverdue ? '⚠️ Overdue' : '⏳ Due'}</strong></p>
+      ${!isRepaid ? `<button onclick="markLoanRepaid(${idx})">Mark as Repaid</button>` : ''}
+    `;
+
+    container.appendChild(row);
+  });
+}
+
+function markLoanRepaid(index) {
+  const loans = JSON.parse(localStorage.getItem('microloansSent') || '[]');
+
+  // Mark the specific loan as repaid
+  loans[index].repaid = true;
+
+  // Save updated array back to localStorage
+  localStorage.setItem('microloansSent', JSON.stringify(loans));
+
+  // Feedback to user
+  logMessage('✅ Loan marked as repaid.');
+  showToast('✅ Loan status updated.');
+
+  // Refresh the UI
+  renderLoanLedger();
+}
+
+
 
 
 // --- Donation Mode ---
@@ -653,4 +711,76 @@ function applyPersona() {
       showToast("Persona cleared.");
       break;
   }
+}
+
+function askDemo(prompt) {
+  document.getElementById('assistant-input').value = prompt;
+  askAssistant();
+}
+
+function exportWalletData() {
+  if (!currentKeypair) {
+    alert('Please log in to a wallet first.');
+    return;
+  }
+
+  const pubKey = currentKeypair.publicKey();
+  const encryptedKey = localStorage.getItem('encryptedKey');
+  const txHistory = localStorage.getItem('txHistory') || '[]';
+  const microloansSent = localStorage.getItem('microloansSent') || '[]';
+  const txQueue = localStorage.getItem('txQueue') || '[]';
+
+  const backup = {
+    publicKey: pubKey,
+    timestamp: new Date().toISOString(),
+    encryptedKey: JSON.parse(encryptedKey),
+    txHistory: JSON.parse(txHistory),
+    microloansSent: JSON.parse(microloansSent),
+    txQueue: JSON.parse(txQueue)
+  };
+
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `basicpay-backup-${pubKey.slice(0, 6)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+
+function importWalletData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const backup = JSON.parse(e.target.result);
+
+      if (!backup.publicKey || !backup.encryptedKey) {
+        alert('Invalid backup file.');
+        return;
+      }
+
+      // Confirm overwrite
+      if (!confirm(`Import wallet for ${backup.publicKey.slice(0, 6)}...? This will overwrite current data.`)) {
+        return;
+      }
+
+      // Save everything to localStorage
+      localStorage.setItem('encryptedKey', JSON.stringify(backup.encryptedKey));
+      localStorage.setItem('txHistory', JSON.stringify(backup.txHistory || []));
+      localStorage.setItem('microloansSent', JSON.stringify(backup.microloansSent || []));
+      localStorage.setItem('txQueue', JSON.stringify(backup.txQueue || []));
+
+      alert('✅ Backup imported! Log in with your password to access.');
+    } catch (err) {
+      alert('Failed to import: ' + err.message);
+      console.error(err);
+    }
+  };
+
+  reader.readAsText(file);
 }

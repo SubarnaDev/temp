@@ -1,7 +1,6 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,75 +14,133 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script>
   <!-- Ensure this order -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.0/stellar-sdk.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<!-- <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script> -->
-<script src="https://unpkg.com/html5-qrcode@2.3.9/html5-qrcode.min.js"></script>
-<script src="utils.js"></script>
-<script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.0/stellar-sdk.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <!-- <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script> -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.9/html5-qrcode.min.js"></script>
+  <script src="utils.js"></script>
+  <script src="script.js"></script>
 
 
 
-<script type="module">
-  // 1. Import Firebase SDKs
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+  <script type="module">
+    // 1. Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-  // 2. Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyCItVsh6S3_cUiYXm2GPa6fYnS9O5KIXhk",
-    authDomain: "basicpayplus-37644.firebaseapp.com",
-    projectId: "basicpayplus-37644",
-    storageBucket: "basicpayplus-37644.firebasestorage.app",
-    messagingSenderId: "1035414866927",
-    appId: "1:1035414866927:web:223c2c53e3af1a8144841a"
-  };
+    // 2. Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCItVsh6S3_cUiYXm2GPa6fYnS9O5KIXhk",
+      authDomain: "basicpayplus-37644.firebaseapp.com",
+      projectId: "basicpayplus-37644",
+      storageBucket: "basicpayplus-37644.firebasestorage.app",
+      messagingSenderId: "1035414866927",
+      appId: "1:1035414866927:web:223c2c53e3af1a8144841a"
+    };
 
-  // 3. Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    // 3. Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  // 4. Example Save Function (replace "pubKey123" and encrypted data)
-  window.saveToCloud = async function (pubKey) {
-    const encryptedData = localStorage.getItem('encryptedKey');
-    if (!encryptedData) {
-      alert('No encrypted wallet found.');
-      return;
-    }
-
-    try {
-      await setDoc(doc(db, "wallets", pubKey), {
-        encryptedKey: JSON.parse(encryptedData),
-        timestamp: Date.now()
-      });
-      alert('☁️ Wallet saved to cloud!');
-    } catch (err) {
-      alert('Save failed: ' + err.message);
-    }
-  };
-
-  // 5. Example Load Function
-  window.loadCloudWallet = async function () {
-    const pubKey = prompt("Enter your public key:");
-    if (!pubKey) return;
-
-    try {
-      const docSnap = await getDoc(doc(db, "wallets", pubKey));
-      if (docSnap.exists()) {
-        localStorage.setItem('encryptedKey', JSON.stringify(docSnap.data().encryptedKey));
-        alert("☁️ Wallet loaded. Now log in with your password.");
-      } else {
-        alert("No wallet found in cloud.");
+    // 4. Example Save Function (replace "pubKey123" and encrypted data)
+    window.saveToCloud = async function (pubKey) {
+      const encryptedData = localStorage.getItem('encryptedKey');
+      if (!encryptedData) {
+        alert('No encrypted wallet found.');
+        return;
       }
-    } catch (err) {
-      alert("Load failed: " + err.message);
+
+      try {
+        await setDoc(doc(db, "wallets", pubKey), {
+          encryptedKey: JSON.parse(encryptedData),
+          timestamp: Date.now()
+        });
+        alert('☁️ Wallet saved to cloud!');
+      } catch (err) {
+        alert('Save failed: ' + err.message);
+      }
+    };
+
+    // 5. Example Load Function
+    window.loadCloudWallet = async function () {
+      const pubKey = prompt("Enter your public key:");
+      if (!pubKey) return;
+
+      try {
+        const docSnap = await getDoc(doc(db, "wallets", pubKey));
+        if (docSnap.exists()) {
+          localStorage.setItem('encryptedKey', JSON.stringify(docSnap.data().encryptedKey));
+          alert("☁️ Wallet loaded. Now log in with your password.");
+        } else {
+          alert("No wallet found in cloud.");
+        }
+      } catch (err) {
+        alert("Load failed: " + err.message);
+      }
+    };
+  </script>
+
+  <script src="https://unpkg.com/i18next@21.6.14/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@6.1.4/i18nextBrowserLanguageDetector.min.js"></script>
+  <script src="https://unpkg.com/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://unpkg.com/jquery-i18next@1.2.1/dist/umd/jquery-i18next.min.js"></script>
+  <script>
+    const resources = {
+      en: {
+        translation: {
+          "welcome": "🚀 Welcome to BasicPay+",
+          "generate_wallet": "Generate Wallet",
+          "send_payment": "Send Payment",
+          "balance": "Balance",
+          "donation_mode": "Enable Donation Mode",
+          "ask_bot": "Ask BasicBot"
+        }
+      },
+      hi: {
+        translation: {
+          "welcome": "🚀 BasicPay+ में आपका स्वागत है",
+          "generate_wallet": "वॉलेट बनाएँ",
+          "send_payment": "भुगतान भेजें",
+          "balance": "शेष राशि",
+          "donation_mode": "दान मोड सक्षम करें",
+          "ask_bot": "BasicBot से पूछें"
+        }
+      },
+      es: {
+        translation: {
+          "welcome": "🚀 Bienvenido a BasicPay+",
+          "generate_wallet": "Generar Cartera",
+          "send_payment": "Enviar Pago",
+          "balance": "Saldo",
+          "donation_mode": "Activar Modo Donación",
+          "ask_bot": "Preguntar a BasicBot"
+        }
+      }
+    };
+
+    i18next
+      .use(i18nextBrowserLanguageDetector)
+      .init({
+        resources,
+        fallbackLng: "en",
+        debug: false
+      }, function (err, t) {
+        jqueryI18next.init(i18next, $, { useOptionsAttr: true });
+        $("body").localize();
+      });
+
+    function changeLanguage(lng) {
+      i18next.changeLanguage(lng, () => {
+        $("body").localize();
+      });
     }
-  };
-</script>
+  </script>
+
 
 
 </head>
+
 <body>
   <div class="container">
     <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
@@ -98,12 +155,14 @@
         <option value="ngo">🤝 NGO Collector</option>
       </select>
     </div>
-    
+
     <div id="pitch">
-      <h2>🚀 Welcome to BasicPay+</h2>
+
+      <h2 data-i18n="welcome">🚀 Welcome to BasicPay+</h2>
       <p>
-        BasicPay+ is a blazing-fast Stellar wallet built for gig workers, small merchants, and remote communities. 
-        It features smart payments, encrypted wallet storage, recurring transfers, and even microloans — all in one lightweight web app.
+        BasicPay+ is a blazing-fast Stellar wallet built for gig workers, small merchants, and remote communities.
+        It features smart payments, encrypted wallet storage, recurring transfers, and even microloans — all in one
+        lightweight web app.
       </p>
       <ul>
         <li>✅ Generate & encrypt your wallet</li>
@@ -113,13 +172,14 @@
         <li>📊 View balance charts & transaction history</li>
         <li>🌍 Offline support for limited-connectivity zones</li>
       </ul>
-      <p><strong>🔁 Try it live — no signup needed. Fund your wallet using Stellar Friendbot and start transacting!</strong></p>
+      <p><strong>🔁 Try it live — no signup needed. Fund your wallet using Stellar Friendbot and start
+          transacting!</strong></p>
       <hr>
     </div>
-    
+
 
     <div id="wallet-section">
-      <button onclick="generateKeypair()">Generate Wallet</button>
+      <button data-i18n="generate_wallet" onclick="generateKeypair()">Generate Wallet</button>
       <p><strong>Public Key:</strong> <span id="public-key"></span></p>
       <p><strong>Secret Key:</strong> <span id="secret-key"></span></p>
       <input type="password" id="encrypt-pass" placeholder="Encrypt Key With Password">
@@ -142,9 +202,9 @@
 
     <div id="wallet-actions" style="display:none;">
       <h3>💰 Wallet Actions</h3>
-      <p><strong>Balance:</strong> <span id="balance"></span> XLM</p>
+      <p><strong data-i18n="balance">Balance:</strong> <span id="balance"></span> XLM</p>
 
-      <h4>📤 Send Payment</h4>
+      <h4>📤 <span data-i18n="send_payment">Send Payment</span></h4>
       <input type="text" id="dest-address" placeholder="Recipient Public Key">
       <input type="text" id="amount" placeholder="Amount (XLM)">
       <input type="text" id="memo" placeholder="Memo (Optional)">
@@ -174,16 +234,20 @@
       <div id="qrcode"></div>
 
       <h4>💸 Microloans</h4>
-  <input type="text" id="loan-recipient" placeholder="Recipient Public Key">
-  <input type="text" id="loan-amount" placeholder="Loan Amount (XLM)">
-  <input type="date" id="loan-due" placeholder="Due Date">
-  <input type="text" id="loan-memo" placeholder="Memo (Optional)">
-  <button onclick="sendMicroloan()">Send Loan</button>
+      <input type="text" id="loan-recipient" placeholder="Recipient Public Key">
+      <input type="text" id="loan-amount" placeholder="Loan Amount (XLM)">
+      <input type="date" id="loan-due" placeholder="Due Date">
+      <input type="text" id="loan-memo" placeholder="Memo (Optional)">
+      <button onclick="sendMicroloan()">Send Loan</button>
 
-  <h4>📥 Donations</h4>
-  <label><input type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable Donation Mode</label>
-  <button onclick="generateDonationQRCode()">Generate Donation QR</button>
-  <div id="donation-qr"></div>
+      <h4>📒 Loan Ledger</h4>
+      <div id="loan-ledger"></div>
+
+
+      <h4>📥 Donations</h4>
+      <label><input type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable Donation Mode</label>
+      <button onclick="generateDonationQRCode()">Generate Donation QR</button>
+      <div id="donation-qr"></div>
 
 
       <h4>📊 Balance Chart</h4>
@@ -191,33 +255,62 @@
 
       <h4>📑 Transaction History</h4>
       <div id="transaction-history"></div>
-    </div>
+      <h4>📤 Export Wallet</h4>
+      <button onclick="exportWalletData()">Download Backup</button>
+      <h4>📥 Import Wallet</h4>
+      <input type="file" accept=".json" onchange="importWalletData(event)">
+      
 
-    
+    </div>
+      
+
+
 
     <div style="text-align: right;">
       <label>
         🌙 Dark Mode
         <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()" />
       </label>
+      <div style="margin-top:10px;">
+        🌐 Language:
+        <select onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="es">Español</option>
+        </select>
+      </div>
+
       <div id="install-box" style="display:none; text-align:center; margin-top:20px;">
         <button onclick="installApp()">📲 Install BasicPay+</button>
       </div>
-      
+
     </div>
     <div id="log"></div>
   </div>
 
 
-  <h4>🤖 Ask BasicBot</h4>
+  <h4>🤖 <span data-i18n="ask_bot">Ask BasicBot</span></h4>
   <div id="assistant-box">
     <input type="text" id="assistant-input" placeholder="Ask me anything about the wallet..." />
     <button onclick="askAssistant()">Ask</button>
     <div id="assistant-response"></div>
+
+    <div id="assistant-suggestions" style="margin-top: 20px;">
+      <p><strong>💡 Try asking:</strong></p>
+      <ul style="padding-left: 20px;">
+        <li><a href="#" onclick="askDemo('How do I receive donations?')">How do I receive donations?</a></li>
+        <li><a href="#" onclick="askDemo('What does recurring payment do?')">What does recurring payment do?</a></li>
+        <li><a href="#" onclick="askDemo('How to send a microloan with a due date?')">How to send a microloan with a due
+            date?</a></li>
+        <li><a href="#" onclick="askDemo('What happens when I\'m offline?')">What happens when I'm offline?</a></li>
+      </ul>
+    </div>
   </div>
 
-<!-- 
+
+  <!-- 
   <script src="utils.js"></script>
   <script src="script.js"></script> -->
 </body>
-</html> 
+
+</html>
