@@ -613,7 +613,6 @@ if ('serviceWorker' in navigator) {
 
 
 
-
   async function askAssistant() {
     const input = document.getElementById('assistant-input').value.trim();
     const responseBox = document.getElementById('assistant-response');
@@ -630,13 +629,15 @@ if ('serviceWorker' in navigator) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: input })
       });
-    
-      const text = await res.text(); // safer than .json()
-      const data = JSON.parse(text);
-      responseBox.textContent = data?.response || 'No response received.';
+  
+      const data = await res.json();
+  
+      console.log('Assistant reply:', data); // log to see structure
+  
+      responseBox.textContent = data?.response || '🤖 No helpful reply received.';
     } catch (err) {
       responseBox.textContent = 'Assistant error: ' + err.message;
-      console.error(err);
+      console.error('Assistant fetch error:', err);
     }
-    
   }
+  
