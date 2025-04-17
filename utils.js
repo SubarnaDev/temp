@@ -1,3 +1,18 @@
+// Add this in script.js or utils.js
+document.getElementById("encrypt-pass").addEventListener("input", e => {
+  const strengthEl = document.getElementById("pass-strength");
+  const val = e.target.value;
+  if (val.length < 6) {
+    strengthEl.textContent = "❗ Too short";
+    strengthEl.style.color = "red";
+  } else if (val.length < 10) {
+    strengthEl.textContent = "⚠️ Moderate";
+    strengthEl.style.color = "orange";
+  } else {
+    strengthEl.textContent = "✅ Strong";
+    strengthEl.style.color = "green";
+  }
+});
 
 
 // utils.js

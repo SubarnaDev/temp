@@ -14,11 +14,15 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script>
+  <!-- Ensure this order -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.0/stellar-sdk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script>
 
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="firebase.js"></script>
+<script src="utils.js"></script>
+<script src="script.js"></script>
+
 
 </head>
 <body>
@@ -48,6 +52,9 @@
       <p><strong>Public Key:</strong> <span id="public-key"></span></p>
       <p><strong>Secret Key:</strong> <span id="secret-key"></span></p>
       <input type="password" id="encrypt-pass" placeholder="Encrypt Key With Password">
+      <!-- Add this in `index.html` under #encrypt-pass -->
+      <small id="pass-strength" style="color: gray; display: block; margin-top: 4px;"></small>
+
       <button onclick="encryptKey()">Encrypt & Save</button>
       <button onclick="fundAccount()">Fund Testnet Wallet</button>
     </div>
@@ -69,6 +76,11 @@
       <input type="text" id="amount" placeholder="Amount (XLM)">
       <input type="text" id="memo" placeholder="Memo (Optional)">
       <button onclick="sendPayment(document.getElementById('memo').value)">Send</button>
+
+      <!-- Add in index.html under “Send Payment” -->
+      <button onclick="scanQRCode()">📷 Scan QR to Fill</button>
+      <video id="qr-video" width="300" style="display:none;"></video>
+
 
       <h4>⏳ Recurring Payments</h4>
       <input type="text" id="recurring-dest" placeholder="Recipient Public Key">
@@ -127,8 +139,8 @@
     <div id="assistant-response"></div>
   </div>
 
-
+<!-- 
   <script src="utils.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js"></script> -->
 </body>
 </html> 

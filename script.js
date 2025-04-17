@@ -123,6 +123,10 @@ if ('serviceWorker' in navigator) {
   function sendPayment(memo = '') {
     const destination = document.getElementById('dest-address').value.trim();
     const amount = document.getElementById('amount').value.trim();
+
+    // Inside sendPayment()
+    if (!confirm(`Send ${amount} XLM to ${destination}?`)) return;
+
   
     if (!currentKeypair || !destination || !amount) {
       logMessage('All fields are required.', 'error');
@@ -286,6 +290,9 @@ function sendMicroloan() {
   const dueDate = document.getElementById('loan-due').value;
   const memo = document.getElementById('loan-memo').value || 'Microloan';
 
+  if (!confirm(`Send loan of ${amount} XLM to ${recipient}, due ${dueDate}?`)) return;
+
+
   if (!currentKeypair || !recipient || !amount || !dueDate) {
     logMessage('All loan fields are required.', 'error');
     return;
@@ -382,3 +389,26 @@ function generateDonationQRCode() {
   
 
 
+// Add in script.js
+function scanQRCode() {
+  const scanner = new Html5Qrcode("qr-video");
+  document.getElementById("qr-video").style.display = 'block';
+
+  scanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    qrCodeMessage => {
+      try {
+        const data = JSON.parse(qrCodeMessage);
+        document.getElementById("dest-address").value = data.address;
+        document.getElementById("amount").value = data.amount || '';
+        document.getElementById("memo").value = data.memo || '';
+        alert("Filled from QR!");
+        scanner.stop();
+        document.getElementById("qr-video").style.display = 'none';
+      } catch (e) {
+        logMessage('Invalid QR', 'error');
+      }
+    }
+  );
+}
