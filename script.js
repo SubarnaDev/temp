@@ -375,66 +375,6 @@ function stopLiveMonitoring() {
 
 
 
-  async function askAssistant() {
-    const input = document.getElementById('assistant-input').value.trim();
-    const responseBox = document.getElementById('assistant-response');
-    if (!input) {
-      responseBox.textContent = 'Please ask a question!';
-      return;
-    }
-
-    responseBox.textContent = 'Thinking... 🤔';
-
-    try {
-      const res = await fetch('/api/qroq', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: input })
-      });
-
-      const contentType = res.headers.get('content-type');
-
-      let raw;
-      try {
-        raw = await res.text();
-      } catch (e) {
-        console.error('❌ Failed to read response:', e);
-        responseBox.textContent = '❌ Could not read assistant response.';
-        return;
-      }
-
-      if (!res.ok) {
-        console.error('❌ Server returned error:', raw);
-        responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
-        return;
-      }
-
-      if (!contentType || !contentType.includes('application/json')) {
-        console.warn('⚠️ Assistant response was not JSON:', raw);
-        responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
-        return;
-      }
-
-      let data;
-      try {
-        data = JSON.parse(raw);
-      } catch (e) {
-        console.error('❌ JSON parse failed:', raw);
-        responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
-        return;
-      }
-
-      console.log('Assistant reply:', data);
-      responseBox.textContent = data?.response || '🤖 No helpful reply received.';
-    } catch (err) {
-      responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
-      console.error('Assistant fetch error:', err);
-    }
-  }
-
-
-
-
   // async function askAssistant() {
   //   const input = document.getElementById('assistant-input').value.trim();
   //   const responseBox = document.getElementById('assistant-response');
@@ -442,26 +382,86 @@ function stopLiveMonitoring() {
   //     responseBox.textContent = 'Please ask a question!';
   //     return;
   //   }
-  
+
   //   responseBox.textContent = 'Thinking... 🤔';
-  
+
   //   try {
   //     const res = await fetch('/api/qroq', {
   //       method: 'POST',
   //       headers: { 'Content-Type': 'application/json' },
   //       body: JSON.stringify({ prompt: input })
   //     });
-  
-  //     const data = await res.json();
-  
-  //     console.log('Assistant reply:', data); // log to see structure
-  
+
+  //     const contentType = res.headers.get('content-type');
+
+  //     let raw;
+  //     try {
+  //       raw = await res.text();
+  //     } catch (e) {
+  //       console.error('❌ Failed to read response:', e);
+  //       responseBox.textContent = '❌ Could not read assistant response.';
+  //       return;
+  //     }
+
+  //     if (!res.ok) {
+  //       console.error('❌ Server returned error:', raw);
+  //       responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
+  //       return;
+  //     }
+
+  //     if (!contentType || !contentType.includes('application/json')) {
+  //       console.warn('⚠️ Assistant response was not JSON:', raw);
+  //       responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
+  //       return;
+  //     }
+
+  //     let data;
+  //     try {
+  //       data = JSON.parse(raw);
+  //     } catch (e) {
+  //       console.error('❌ JSON parse failed:', raw);
+  //       responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
+  //       return;
+  //     }
+
+  //     console.log('Assistant reply:', data);
   //     responseBox.textContent = data?.response || '🤖 No helpful reply received.';
   //   } catch (err) {
-  //     responseBox.textContent = 'Assistant error: ' + err.message;
+  //     responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
   //     console.error('Assistant fetch error:', err);
   //   }
   // }
+
+
+
+
+  async function askAssistant() {
+    const input = document.getElementById('assistant-input').value.trim();
+    const responseBox = document.getElementById('assistant-response');
+    if (!input) {
+      responseBox.textContent = 'Please ask a question!';
+      return;
+    }
+  
+    responseBox.textContent = 'Thinking... 🤔';
+  
+    try {
+      const res = await fetch('/api/qroq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: input })
+      });
+  
+      const data = await res.json();
+  
+      console.log('Assistant reply:', data); // log to see structure
+  
+      responseBox.textContent = data?.response || '🤖 No helpful reply received.';
+    } catch (err) {
+      responseBox.textContent = 'Assistant error: ' + err.message;
+      console.error('Assistant fetch error:', err);
+    }
+  }
 
 
 
