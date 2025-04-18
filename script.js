@@ -394,30 +394,43 @@ function stopLiveMonitoring() {
 
       const contentType = res.headers.get('content-type');
 
+      let raw;
+      try {
+        raw = await res.text();
+      } catch (e) {
+        console.error('❌ Failed to read response:', e);
+        responseBox.textContent = '❌ Could not read assistant response.';
+        return;
+      }
+
       if (!res.ok) {
-        const raw = await res.text();
         console.error('❌ Server returned error:', raw);
         responseBox.textContent = '❌ Assistant server error.';
         return;
       }
 
       if (!contentType || !contentType.includes('application/json')) {
-        const raw = await res.text();
         console.warn('⚠️ Assistant response was not JSON:', raw);
         responseBox.textContent = '⚠️ Assistant gave unexpected response.';
         return;
       }
 
-      const data = await res.json();
-      console.log('Assistant reply:', data);
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch (e) {
+        console.error('❌ JSON parse failed:', raw);
+        responseBox.textContent = '❌ Assistant returned invalid JSON.';
+        return;
+      }
 
+      console.log('Assistant reply:', data);
       responseBox.textContent = data?.response || '🤖 No helpful reply received.';
     } catch (err) {
       responseBox.textContent = 'Assistant error: ' + err.message;
       console.error('Assistant fetch error:', err);
     }
   }
-
 
 
 
