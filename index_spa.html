@@ -21,7 +21,7 @@
   <!-- <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script> -->
   <!-- <script src="https://unpkg.com/html5-qrcode@2.3.9/html5-qrcode.min.js"></script> -->
   <script src="utils.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 
 
 
@@ -262,7 +262,9 @@
 
         <!-- Add in index.html under “Send Payment” -->
         <button onclick="scanQRCode()">📷 Scan QR to Fill</button>
-        <video id="qr-video" width="300" style="display:none;"></video>
+        <!-- <video id="qr-video" width="300" style="display:none;"></video> -->
+        <div id="qr-video" style="width:300px; display:none;"></div>
+
 
         <h4>📎 Request Payment</h4>
         <input type="text" id="request-amount" placeholder="Amount (XLM)">

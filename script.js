@@ -604,9 +604,34 @@ function generateDonationQRCode() {
 
 
 // Add in script.js
+// function scanQRCode() {
+//   const scanner = new Html5Qrcode("qr-video");
+//   document.getElementById("qr-video").style.display = 'block';
+
+//   scanner.start(
+//     { facingMode: "environment" },
+//     { fps: 10, qrbox: 250 },
+//     qrCodeMessage => {
+//       try {
+//         const data = JSON.parse(qrCodeMessage);
+//         document.getElementById("dest-address").value = data.address;
+//         document.getElementById("amount").value = data.amount || '';
+//         document.getElementById("memo").value = data.memo || '';
+//         alert("Filled from QR!");
+//         scanner.stop();
+//         document.getElementById("qr-video").style.display = 'none';
+//       } catch (e) {
+//         logMessage('Invalid QR', 'error');
+//       }
+//     }
+//   );
+// }
+
 function scanQRCode() {
+  const qrContainer = document.getElementById("qr-video");
+  qrContainer.style.display = 'block';
+
   const scanner = new Html5Qrcode("qr-video");
-  document.getElementById("qr-video").style.display = 'block';
 
   scanner.start(
     { facingMode: "environment" },
@@ -617,15 +642,26 @@ function scanQRCode() {
         document.getElementById("dest-address").value = data.address;
         document.getElementById("amount").value = data.amount || '';
         document.getElementById("memo").value = data.memo || '';
-        alert("Filled from QR!");
-        scanner.stop();
-        document.getElementById("qr-video").style.display = 'none';
+        showToast("✅ Filled from QR code!");
+
+        scanner.stop().then(() => {
+          qrContainer.innerHTML = ''; // cleanup
+          qrContainer.style.display = 'none';
+        });
       } catch (e) {
-        logMessage('Invalid QR', 'error');
+        showToast("❌ Invalid QR code format.");
       }
+    },
+    errorMessage => {
+      // Optional: ignore scanning errors here
+      console.warn("QR scan error:", errorMessage);
     }
-  );
+  ).catch(err => {
+    console.error("Failed to start QR scanner:", err);
+    showToast("❌ Camera error. Check permissions.");
+  });
 }
+
 
 
 
