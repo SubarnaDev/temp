@@ -190,7 +190,8 @@
       <ul>
         <li>💸 <strong>Global remittance fees average 6.25%</strong> (World Bank). BasicPay+ enables transfers for
           <strong>
-            < $0.001</strong> via Stellar.</li>
+            < $0.001</strong> via Stellar.
+        </li>
         <li>⏱ <strong>Real-time transactions</strong> settle in ~5 seconds — no delays or middlemen.</li>
         <li>📱 <strong>Bank-free onboarding</strong>: users only need a smartphone to send, receive, or store funds
           securely.</li>
@@ -244,6 +245,7 @@
         <button onclick="navigateTo('recurring')">⏳ Recurring</button>
         <button onclick="navigateTo('loan')">💸 Loan</button>
         <button onclick="navigateTo('backup')">🗃 Backup</button>
+        <button onclick="navigateTo('donet')">📥 Donetion</button>
         <button onclick="navigateTo('help')">🤖 Help</button>
       </nav>
 
@@ -304,12 +306,39 @@
       </div>
 
 
-      <div id="view-help" class="view" style="display:none;">
+      <div id="view-donet" class="view" style="display:none;">
         <h4>📥 Donations</h4>
         <label><input type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable Donation Mode</label>
         <button onclick="generateDonationQRCode()">Generate Donation QR</button>
         <div id="donation-qr"></div>
       </div>
+
+      <div id="view-help" class="view" style="display:none;">
+
+        <h4>🤖 <span data-i18n="ask_bot">Ask BasicBot</span></h4>
+        <div id="assistant-box">
+          <input type="text" id="assistant-input" placeholder="Ask me anything about the wallet..." />
+          <button onclick="askAssistant()">Ask</button>
+          <div id="assistant-response"></div>
+
+          <div id="assistant-suggestions" style="margin-top: 20px;">
+            <p><strong>💡 Try asking:</strong></p>
+            <ul style="padding-left: 20px;">
+              <li><a href="#" onclick="askDemo('How do I receive donations?')">How do I receive donations?</a></li>
+              <li><a href="#" onclick="askDemo('What does recurring payment do?')">What does recurring payment do?</a>
+              </li>
+              <li><a href="#" onclick="askDemo('How to send a microloan with a due date?')">How to send a microloan with
+                  a due
+                  date?</a></li>
+              <li><a href="#" onclick="askDemo('What happens when I\'m offline?')">What happens when I'm offline?</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+      </div>
+
 
 
       <h4>📊 Balance Chart</h4>
@@ -317,10 +346,10 @@
 
       <h4>📑 Transaction History</h4>
       <div id="transaction-history"></div>
-      <h4>📤 Export Wallet</h4>
+      <!-- <h4>📤 Export Wallet</h4>
       <button onclick="exportWalletData()">Download Backup</button>
       <h4>📥 Import Wallet</h4>
-      <input type="file" accept=".json" onchange="importWalletData(event)">
+      <input type="file" accept=".json" onchange="importWalletData(event)"> -->
 
 
     </div>
@@ -352,23 +381,7 @@
   </div>
 
 
-  <h4>🤖 <span data-i18n="ask_bot">Ask BasicBot</span></h4>
-  <div id="assistant-box">
-    <input type="text" id="assistant-input" placeholder="Ask me anything about the wallet..." />
-    <button onclick="askAssistant()">Ask</button>
-    <div id="assistant-response"></div>
 
-    <div id="assistant-suggestions" style="margin-top: 20px;">
-      <p><strong>💡 Try asking:</strong></p>
-      <ul style="padding-left: 20px;">
-        <li><a href="#" onclick="askDemo('How do I receive donations?')">How do I receive donations?</a></li>
-        <li><a href="#" onclick="askDemo('What does recurring payment do?')">What does recurring payment do?</a></li>
-        <li><a href="#" onclick="askDemo('How to send a microloan with a due date?')">How to send a microloan with a due
-            date?</a></li>
-        <li><a href="#" onclick="askDemo('What happens when I\'m offline?')">What happens when I'm offline?</a></li>
-      </ul>
-    </div>
-  </div>
 
 
   <!-- 
