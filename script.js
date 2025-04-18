@@ -375,9 +375,6 @@ function stopLiveMonitoring() {
 
 
 
-
-
-
   async function askAssistant() {
     const input = document.getElementById('assistant-input').value.trim();
     const responseBox = document.getElementById('assistant-response');
@@ -385,26 +382,72 @@ function stopLiveMonitoring() {
       responseBox.textContent = 'Please ask a question!';
       return;
     }
-  
+
     responseBox.textContent = 'Thinking... 🤔';
-  
+
     try {
       const res = await fetch('/api/qroq', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: input })
       });
-  
+
+      const contentType = res.headers.get('content-type');
+
+      if (!res.ok) {
+        const raw = await res.text();
+        console.error('❌ Server returned error:', raw);
+        responseBox.textContent = '❌ Assistant server error.';
+        return;
+      }
+
+      if (!contentType || !contentType.includes('application/json')) {
+        const raw = await res.text();
+        console.warn('⚠️ Assistant response was not JSON:', raw);
+        responseBox.textContent = '⚠️ Assistant gave unexpected response.';
+        return;
+      }
+
       const data = await res.json();
-  
-      console.log('Assistant reply:', data); // log to see structure
-  
+      console.log('Assistant reply:', data);
+
       responseBox.textContent = data?.response || '🤖 No helpful reply received.';
     } catch (err) {
       responseBox.textContent = 'Assistant error: ' + err.message;
       console.error('Assistant fetch error:', err);
     }
   }
+
+
+
+
+  // async function askAssistant() {
+  //   const input = document.getElementById('assistant-input').value.trim();
+  //   const responseBox = document.getElementById('assistant-response');
+  //   if (!input) {
+  //     responseBox.textContent = 'Please ask a question!';
+  //     return;
+  //   }
+  
+  //   responseBox.textContent = 'Thinking... 🤔';
+  
+  //   try {
+  //     const res = await fetch('/api/qroq', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ prompt: input })
+  //     });
+  
+  //     const data = await res.json();
+  
+  //     console.log('Assistant reply:', data); // log to see structure
+  
+  //     responseBox.textContent = data?.response || '🤖 No helpful reply received.';
+  //   } catch (err) {
+  //     responseBox.textContent = 'Assistant error: ' + err.message;
+  //     console.error('Assistant fetch error:', err);
+  //   }
+  // }
 
 
 
