@@ -405,13 +405,13 @@ function stopLiveMonitoring() {
 
       if (!res.ok) {
         console.error('❌ Server returned error:', raw);
-        responseBox.textContent = '❌ Assistant server error.';
+        responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
         return;
       }
 
       if (!contentType || !contentType.includes('application/json')) {
         console.warn('⚠️ Assistant response was not JSON:', raw);
-        responseBox.textContent = '⚠️ Assistant gave unexpected response.';
+        responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
         return;
       }
 
@@ -420,17 +420,18 @@ function stopLiveMonitoring() {
         data = JSON.parse(raw);
       } catch (e) {
         console.error('❌ JSON parse failed:', raw);
-        responseBox.textContent = '❌ Assistant returned invalid JSON.';
+        responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
         return;
       }
 
       console.log('Assistant reply:', data);
       responseBox.textContent = data?.response || '🤖 No helpful reply received.';
     } catch (err) {
-      responseBox.textContent = 'Assistant error: ' + err.message;
+      responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
       console.error('Assistant fetch error:', err);
     }
   }
+
 
 
 
