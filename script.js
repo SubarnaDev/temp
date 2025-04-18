@@ -452,18 +452,46 @@ function stopLiveMonitoring() {
         body: JSON.stringify({ prompt: input })
       });
   
-      const data = await res.json();
+      const contentType = res.headers.get('content-type');
   
-      console.log('Assistant reply:', data); // log to see structure
+      let raw;
+      try {
+        raw = await res.text();
+      } catch (e) {
+        console.error('❌ Failed to read response:', e);
+        responseBox.textContent = '❌ Could not read assistant response.';
+        return;
+      }
   
+      if (!res.ok) {
+        console.error('❌ Server returned error:', raw);
+        responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
+        return;
+      }
+  
+      if (!contentType || !contentType.includes('application/json')) {
+        console.warn('⚠️ Assistant response was not JSON:', raw);
+        responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
+        return;
+      }
+  
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch (e) {
+        console.error('❌ JSON parse failed:', raw);
+        responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
+        return;
+      }
+  
+      console.log('Assistant reply:', data);
       responseBox.textContent = data?.response || '🤖 No helpful reply received.';
     } catch (err) {
-      responseBox.textContent = 'Assistant error: ' + err.message;
+      responseBox.textContent = '🤖 BasicBot is currently unavailable. Please try again later.';
       console.error('Assistant fetch error:', err);
     }
   }
-
-
+  
 
 
 
