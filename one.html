@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BasicPay+ - Stellar Wallet</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a73e8" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.0/stellar-sdk.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.9/html5-qrcode.min.js"></script>
+  <script src="utils.js"></script>
+  <script src="script.js"></script>
+
+  <!-- Firebase & i18next (unchanged) -->
+  <!-- ... SKIPPING TO SAVE SPACE — you already have this section in your original HTML ... -->
+</head>
+
+<body>
+  <div class="container">
+    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+    <h1>💫 BasicPay+</h1>
+
+    <!-- 🧭 NAVIGATION TABS -->
+    <nav style="margin-bottom: 20px;">
+      <button onclick="navigateTo('home')">🏠 Home</button>
+      <button onclick="navigateTo('wallet')">💳 Wallet</button>
+      <button onclick="navigateTo('loans')">📒 Loans</button>
+      <button onclick="navigateTo('assistant')">🤖 Assistant</button>
+    </nav>
+
+    <!-- 🌟 VIEW: HOME -->
+    <div id="view-home" class="view">
+      <div id="pitch">
+        <h2 data-i18n="welcome">🚀 Welcome to BasicPay+</h2>
+        <p>
+          BasicPay+ is a blazing-fast Stellar wallet built for gig workers, small merchants, and underserved communities.
+        </p>
+        <!-- (Pitch + feature bullets go here as in your original) -->
+      </div>
+    </div>
+
+    <!-- 💳 VIEW: WALLET -->
+    <div id="view-wallet" class="view" style="display:none;">
+      <div id="wallet-section">
+        <button data-i18n="generate_wallet" onclick="generateKeypair()">Generate Wallet</button>
+        <p><strong>Public Key:</strong> <span id="public-key"></span></p>
+        <p><strong>Secret Key:</strong> <span id="secret-key"></span></p>
+        <input type="password" id="encrypt-pass" placeholder="Encrypt Key With Password" />
+        <small id="pass-strength" style="color: #808080; display: block; margin-top: 4px;"></small>
+        <button onclick="encryptKey()">Encrypt & Save</button>
+        <button onclick="fundAccount()">Fund Testnet Wallet</button>
+      </div>
+
+      <div id="login-section">
+        <h3>🔐 Load Existing Wallet</h3>
+        <input type="password" id="login-secret" placeholder="Enter Secret Key or Password" />
+        <button onclick="loginWallet()">Login</button>
+        <button onclick="saveToCloud(document.getElementById('public-key').textContent)">☁️ Save Wallet to Cloud</button>
+        <button onclick="loadCloudWallet()">☁️ Load Wallet from Cloud</button>
+      </div>
+
+      <div id="wallet-actions" style="display:none;">
+        <h3>💰 Wallet Actions</h3>
+        <p><strong data-i18n="balance">Balance:</strong> <span id="balance"></span> XLM</p>
+        <!-- Send payment, QR scan, recurring, chart, etc. go here -->
+      </div>
+    </div>
+
+    <!-- 📒 VIEW: LOANS -->
+    <div id="view-loans" class="view" style="display:none;">
+      <h2>💸 Microloans</h2>
+      <input type="text" id="loan-recipient" placeholder="Recipient Public Key" />
+      <input type="text" id="loan-amount" placeholder="Loan Amount (XLM)" />
+      <input type="date" id="loan-due" placeholder="Due Date" />
+      <input type="text" id="loan-memo" placeholder="Memo (Optional)" />
+      <button onclick="sendMicroloan()">Send Loan</button>
+
+      <h4>📒 Loan Ledger</h4>
+      <div id="loan-ledger"></div>
+    </div>
+
+    <!-- 🤖 VIEW: ASSISTANT -->
+    <div id="view-assistant" class="view" style="display:none;">
+      <h4>🤖 <span data-i18n="ask_bot">Ask BasicBot</span></h4>
+      <div id="assistant-box">
+        <input type="text" id="assistant-input" placeholder="Ask me anything about the wallet..." />
+        <button onclick="askAssistant()">Ask</button>
+        <div id="assistant-response"></div>
+        <div id="assistant-suggestions" style="margin-top: 20px;">
+          <p><strong>💡 Try asking:</strong></p>
+          <ul style="padding-left: 20px;">
+            <li><a href="#" onclick="askDemo('How do I receive donations?')">How do I receive donations?</a></li>
+            <li><a href="#" onclick="askDemo('What does recurring payment do?')">What does recurring payment do?</a></li>
+            <li><a href="#" onclick="askDemo('How to send a microloan with a due date?')">How to send a microloan with a due date?</a></li>
+            <li><a href="#" onclick="askDemo('What happens when I\'m offline?')">What happens when I'm offline?</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🌙 DARK MODE & LANGUAGE -->
+    <div style="text-align: right; margin-top: 20px;">
+      <label>
+        🌙 Dark Mode
+        <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()" />
+      </label>
+      <div style="margin-top:10px;">
+        🌐 Language:
+        <select onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="es">Español</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PWA Install -->
+    <div id="install-box" style="display:none; text-align:center; margin-top:20px;">
+      <button onclick="installApp()">📲 Install BasicPay+</button>
+    </div>
+
+    <div id="log"></div>
+  </div>
+
+  <!-- 🔁 SPA VIEW HANDLER -->
+  <script>
+    function navigateTo(view) {
+      window.location.hash = view;
+    }
+
+    function showViewFromHash() {
+      const views = document.querySelectorAll('.view');
+      views.forEach(v => v.style.display = 'none');
+      const hash = window.location.hash.slice(1) || 'home';
+      const active = document.getElementById(`view-${hash}`);
+      if (active) active.style.display = 'block';
+    }
+
+    window.addEventListener('hashchange', showViewFromHash);
+    window.addEventListener('DOMContentLoaded', showViewFromHash);
+  </script>
+</body>
+</html>

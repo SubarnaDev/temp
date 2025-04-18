@@ -175,35 +175,43 @@
         <li>☁️ Sync encrypted wallets across devices using Firebase Cloud</li>
         <li>🗣 Available in 3 languages — English, Hindi, and Spanish</li>
       </ul>
-    
-      <p><strong>🔁 Try it live — no signup needed. Fund your wallet using Stellar Friendbot and start transacting!</strong></p>
-    
+
+      <p><strong>🔁 Try it live — no signup needed. Fund your wallet using Stellar Friendbot and start
+          transacting!</strong></p>
+
       <hr>
-    
+
       <h3>🌍 Business & Economic Impact</h3>
       <p>
-        BasicPay+ is built for people who are often excluded from traditional financial systems — freelancers, remittance workers, NGOs, and users in offline or low-connectivity areas.
+        BasicPay+ is built for people who are often excluded from traditional financial systems — freelancers,
+        remittance workers, NGOs, and users in offline or low-connectivity areas.
       </p>
-    
+
       <ul>
-        <li>💸 <strong>Global remittance fees average 6.25%</strong> (World Bank). BasicPay+ enables transfers for <strong>< $0.001</strong> via Stellar.</li>
+        <li>💸 <strong>Global remittance fees average 6.25%</strong> (World Bank). BasicPay+ enables transfers for
+          <strong>
+            < $0.001</strong> via Stellar.</li>
         <li>⏱ <strong>Real-time transactions</strong> settle in ~5 seconds — no delays or middlemen.</li>
-        <li>📱 <strong>Bank-free onboarding</strong>: users only need a smartphone to send, receive, or store funds securely.</li>
+        <li>📱 <strong>Bank-free onboarding</strong>: users only need a smartphone to send, receive, or store funds
+          securely.</li>
         <li>📶 <strong>Offline-first UX</strong>: queuing + service worker support makes it usable in rural zones.</li>
-        <li>📤 <strong>Microloans for local lending</strong>: enable peer-to-peer credit with built-in tracking & reminders.</li>
+        <li>📤 <strong>Microloans for local lending</strong>: enable peer-to-peer credit with built-in tracking &
+          reminders.</li>
       </ul>
-    
+
       <h4>💼 Future Revenue & Growth Models</h4>
       <ul>
         <li>🤝 <strong>NGO Donation Portals</strong>: Host white-label QR campaigns for charity orgs (SaaS model)</li>
         <li>📘 <strong>Microloan Ledger as a Service</strong>: Offer tools to community banks and cooperatives</li>
-        <li>📊 <strong>Pro Insights</strong>: Premium charts, analytics & automated reporting for merchants/freelancers</li>
+        <li>📊 <strong>Pro Insights</strong>: Premium charts, analytics & automated reporting for merchants/freelancers
+        </li>
       </ul>
-    
-      <p><strong>BasicPay+ saves users time and money — while giving the unbanked access to secure, scalable digital finance.</strong></p>
-    
+
+      <p><strong>BasicPay+ saves users time and money — while giving the unbanked access to secure, scalable digital
+          finance.</strong></p>
+
     </div>
-    
+
 
 
     <div id="wallet-section">
@@ -229,53 +237,79 @@
     </div>
 
     <div id="wallet-actions" style="display:none;">
-      <h3>💰 Wallet Actions</h3>
-      <p><strong data-i18n="balance">Balance:</strong> <span id="balance"></span> XLM</p>
 
-      <h4>📤 <span data-i18n="send_payment">Send Payment</span></h4>
-      <input type="text" id="dest-address" placeholder="Recipient Public Key">
-      <input type="text" id="amount" placeholder="Amount (XLM)">
-      <input type="text" id="memo" placeholder="Memo (Optional)">
-      <button onclick="sendPayment(document.getElementById('memo').value)">Send</button>
+      <!-- NAVIGATION -->
+      <nav id="view-nav">
+        <button onclick="navigateTo('wallet')">💳 Wallet</button>
+        <button onclick="navigateTo('recurring')">⏳ Recurring</button>
+        <button onclick="navigateTo('loan')">💸 Loan</button>
+        <button onclick="navigateTo('backup')">🗃 Backup</button>
+        <button onclick="navigateTo('help')">🤖 Help</button>
+      </nav>
 
-      <!-- Add in index.html under “Send Payment” -->
-      <button onclick="scanQRCode()">📷 Scan QR to Fill</button>
-      <video id="qr-video" width="300" style="display:none;"></video>
+      <div id="view-wallet" class="view">
+        <h3>💰 Wallet Actions</h3>
+        <p><strong data-i18n="balance">Balance:</strong> <span id="balance"></span> XLM</p>
+
+        <h4>📤 <span data-i18n="send_payment">Send Payment</span></h4>
+        <input type="text" id="dest-address" placeholder="Recipient Public Key">
+        <input type="text" id="amount" placeholder="Amount (XLM)">
+        <input type="text" id="memo" placeholder="Memo (Optional)">
+        <button onclick="sendPayment(document.getElementById('memo').value)">Send</button>
+
+        <!-- Add in index.html under “Send Payment” -->
+        <button onclick="scanQRCode()">📷 Scan QR to Fill</button>
+        <video id="qr-video" width="300" style="display:none;"></video>
+
+        <h4>📎 Request Payment</h4>
+        <input type="text" id="request-amount" placeholder="Amount (XLM)">
+        <button onclick="generateQRCode()">Generate QR</button>
+        <div id="qrcode"></div>
+
+      </div>
 
 
-      <h4>⏳ Recurring Payments</h4>
-      <input type="text" id="recurring-dest" placeholder="Recipient Public Key">
-      <input type="text" id="recurring-amount" placeholder="Amount (XLM)">
-      <input type="number" id="interval" placeholder="Interval (sec)">
-      <input type="text" id="recurring-memo" placeholder="Memo (Optional)">
-      <button onclick="scheduleRecurringPayment(
+      <div id="view-recurring" class="view" style="display:none;">
+        <h4>⏳ Recurring Payments</h4>
+        <input type="text" id="recurring-dest" placeholder="Recipient Public Key">
+        <input type="text" id="recurring-amount" placeholder="Amount (XLM)">
+        <input type="number" id="interval" placeholder="Interval (sec)">
+        <input type="text" id="recurring-memo" placeholder="Memo (Optional)">
+        <button onclick="scheduleRecurringPayment(
         document.getElementById('recurring-dest').value,
         document.getElementById('recurring-amount').value,
         parseInt(document.getElementById('interval').value),
         document.getElementById('recurring-memo').value
       )">Start Recurring</button>
-      <button onclick="stopRecurringPayments()">Stop All</button>
+        <button onclick="stopRecurringPayments()">Stop All</button>
+      </div>
 
-      <h4>📎 Request Payment</h4>
-      <input type="text" id="request-amount" placeholder="Amount (XLM)">
-      <button onclick="generateQRCode()">Generate QR</button>
-      <div id="qrcode"></div>
+      <div id="view-loan" class="view" style="display:none;">
+        <h4>💸 Microloans</h4>
+        <input type="text" id="loan-recipient" placeholder="Recipient Public Key">
+        <input type="text" id="loan-amount" placeholder="Loan Amount (XLM)">
+        <input type="date" id="loan-due" placeholder="Due Date">
+        <input type="text" id="loan-memo" placeholder="Memo (Optional)">
+        <button onclick="sendMicroloan()">Send Loan</button>
 
-      <h4>💸 Microloans</h4>
-      <input type="text" id="loan-recipient" placeholder="Recipient Public Key">
-      <input type="text" id="loan-amount" placeholder="Loan Amount (XLM)">
-      <input type="date" id="loan-due" placeholder="Due Date">
-      <input type="text" id="loan-memo" placeholder="Memo (Optional)">
-      <button onclick="sendMicroloan()">Send Loan</button>
+        <h4>📒 Loan Ledger</h4>
+        <div id="loan-ledger"></div>
+      </div>
 
-      <h4>📒 Loan Ledger</h4>
-      <div id="loan-ledger"></div>
+      <div id="view-backup" class="view" style="display:none;">
+        h4>📤 Export Wallet</h4>
+        <button onclick="exportWalletData()">Download Backup</button>
+        <h4>📥 Import Wallet</h4>
+        <input type="file" accept=".json" onchange="importWalletData(event)">
+      </div>
 
 
-      <h4>📥 Donations</h4>
-      <label><input type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable Donation Mode</label>
-      <button onclick="generateDonationQRCode()">Generate Donation QR</button>
-      <div id="donation-qr"></div>
+      <div id="view-help" class="view" style="display:none;">
+        <h4>📥 Donations</h4>
+        <label><input type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable Donation Mode</label>
+        <button onclick="generateDonationQRCode()">Generate Donation QR</button>
+        <div id="donation-qr"></div>
+      </div>
 
 
       <h4>📊 Balance Chart</h4>
@@ -287,10 +321,11 @@
       <button onclick="exportWalletData()">Download Backup</button>
       <h4>📥 Import Wallet</h4>
       <input type="file" accept=".json" onchange="importWalletData(event)">
-      
+
 
     </div>
-      
+
+
 
 
 
@@ -339,6 +374,28 @@
   <!-- 
   <script src="utils.js"></script>
   <script src="script.js"></script> -->
+  <script>
+    function navigateTo(view) {
+      window.location.hash = view;
+    }
+
+    function showViewFromHash() {
+      const views = document.querySelectorAll('.view');
+      views.forEach(v => v.style.display = 'none');
+      const hash = window.location.hash.slice(1) || 'wallet';
+      const active = document.getElementById(`view-${hash}`);
+      if (active) active.style.display = 'block';
+    }
+
+    function showPostLoginUI() {
+      document.getElementById('post-login').style.display = 'block';
+      document.getElementById('before-login').style.display = 'none';
+      showViewFromHash();
+    }
+
+    window.addEventListener('hashchange', showViewFromHash);
+    window.addEventListener('DOMContentLoaded', showViewFromHash);
+  </script>
 </body>
 
 </html>
