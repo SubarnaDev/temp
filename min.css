@@ -1,0 +1,57 @@
+@media(max-width:650px){
+    .chart-wrapper {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 10px;
+      }
+      
+      #balanceChart {
+        width: 100% !important;
+        height: 150px !important;
+      }
+      
+    .container{
+        margin: 0;
+    }
+    body{
+        padding: 0;
+        margin: 0;
+    }
+
+    #view-nav{
+        display: none !important;
+    }
+
+    #view-nav-mini {
+        position: fixed;
+        background-color: white;
+        bottom: 0;
+        left: 0;
+        height: 4rem;
+        width: 100vw;
+        /* margin: 2rem 0; */
+        display: flex !important;
+        flex-direction: row;
+        overflow: scroll;
+        justify-content: space-around;
+        align-items: center;
+        
+    }
+    #view-nav-mini button {
+        background-color: inherit;
+        margin: 0;
+        padding: 0;
+        color: #757575;
+        font-size: 1.4rem;
+        width: -3rem;
+    }
+}
+
+@media(max-width:411px){
+    .wallet-section-p {
+        flex-direction: column;
+    }
+    .wallet-section-p p:nth-of-type(2) {
+        margin-left: 0rem;
+    }
+}

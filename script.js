@@ -149,6 +149,11 @@ async function loginWallet() {
     document.getElementById('public-key').textContent = keypair.publicKey();
     document.getElementById('secret-key').textContent = secret;
 
+
+    document.getElementById("prelogin-area").style.display = "none";
+    document.getElementById("wallet-actions").style.display = "block";
+
+
     toggleWalletActions(true);
     checkBalance();
     loadTransactionHistory();
@@ -361,9 +366,13 @@ function stopLiveMonitoring() {
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false, // 👈 Add this
           scales: {
             y: { beginAtZero: true }
           }
+          // scales: {
+          //   y: { beginAtZero: true }
+          // }
         }
       });
     } else {
@@ -904,4 +913,18 @@ function importWalletData(event) {
   };
 
   reader.readAsText(file);
+}
+
+
+
+function logout() {
+  localStorage.removeItem("decryptedSecret");
+  document.getElementById("wallet-actions").style.display = "none";
+  document.getElementById("prelogin-area").style.display = "block";
+  window.location.hash = '';
+}
+
+function togglePrelogin() {
+  const section = document.getElementById("prelogin-area");
+  section.style.display = (section.style.display === "none") ? "block" : "none";
 }

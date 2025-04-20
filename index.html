@@ -2,345 +2,499 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BasicPay+ - Stellar Wallet</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1a73e8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasicPay+ - Stellar Wallet</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a73e8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" href="24px.svg" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="min.css">
 
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.0/stellar-sdk.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script>
-  <!-- Ensure this order -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.0/stellar-sdk.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <!-- <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script> -->
-  <script src="https://unpkg.com/html5-qrcode@2.3.9/html5-qrcode.min.js"></script>
-  <script src="utils.js"></script>
-  <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.0/stellar-sdk.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <!-- <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script> -->
+    <!-- Ensure this order -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.0/stellar-sdk.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"
+        integrity="sha512-r6rDA7W6ZeQhvl8S7yRVQUKVHdexq+GAlNkNNqVC7YyIV+NwqCTJe2hDWCiffTyRNOeGEzRRJ9ifvRm/HCzGYg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script> -->
+    <!-- <script src="https://unpkg.com/html5-qrcode@2.3.9/html5-qrcode.min.js"></script> -->
+    <script src="utils.js"></script>
+    <script src="script.js" defer></script>
 
 
 
-  <script type="module">
-    // 1. Import Firebase SDKs
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    <script type="module">
+        // 1. Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-    // 2. Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCItVsh6S3_cUiYXm2GPa6fYnS9O5KIXhk",
-      authDomain: "basicpayplus-37644.firebaseapp.com",
-      projectId: "basicpayplus-37644",
-      storageBucket: "basicpayplus-37644.firebasestorage.app",
-      messagingSenderId: "1035414866927",
-      appId: "1:1035414866927:web:223c2c53e3af1a8144841a"
-    };
+        // 2. Your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCItVsh6S3_cUiYXm2GPa6fYnS9O5KIXhk",
+            authDomain: "basicpayplus-37644.firebaseapp.com",
+            projectId: "basicpayplus-37644",
+            storageBucket: "basicpayplus-37644.firebasestorage.app",
+            messagingSenderId: "1035414866927",
+            appId: "1:1035414866927:web:223c2c53e3af1a8144841a"
+        };
 
-    // 3. Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+        // 3. Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    // 4. Example Save Function (replace "pubKey123" and encrypted data)
-    window.saveToCloud = async function (pubKey) {
-      const encryptedData = localStorage.getItem('encryptedKey');
-      if (!encryptedData) {
-        alert('No encrypted wallet found.');
-        return;
-      }
+        // 4. Example Save Function (replace "pubKey123" and encrypted data)
+        window.saveToCloud = async function (pubKey) {
+            const encryptedData = localStorage.getItem('encryptedKey');
+            if (!encryptedData) {
+                alert('No encrypted wallet found.');
+                return;
+            }
 
-      try {
-        await setDoc(doc(db, "wallets", pubKey), {
-          encryptedKey: JSON.parse(encryptedData),
-          timestamp: Date.now()
-        });
-        alert('☁️ Wallet saved to cloud!');
-      } catch (err) {
-        alert('Save failed: ' + err.message);
-      }
-    };
+            try {
+                await setDoc(doc(db, "wallets", pubKey), {
+                    encryptedKey: JSON.parse(encryptedData),
+                    timestamp: Date.now()
+                });
+                alert('☁️ Wallet saved to cloud!');
+            } catch (err) {
+                alert('Save failed: ' + err.message);
+            }
+        };
 
-    // 5. Example Load Function
-    window.loadCloudWallet = async function () {
-      const pubKey = prompt("Enter your public key:");
-      if (!pubKey) return;
+        // 5. Example Load Function
+        window.loadCloudWallet = async function () {
+            const pubKey = prompt("Enter your public key:");
+            if (!pubKey) return;
 
-      try {
-        const docSnap = await getDoc(doc(db, "wallets", pubKey));
-        if (docSnap.exists()) {
-          localStorage.setItem('encryptedKey', JSON.stringify(docSnap.data().encryptedKey));
-          alert("☁️ Wallet loaded. Now log in with your password.");
-        } else {
-          alert("No wallet found in cloud.");
+            try {
+                const docSnap = await getDoc(doc(db, "wallets", pubKey));
+                if (docSnap.exists()) {
+                    localStorage.setItem('encryptedKey', JSON.stringify(docSnap.data().encryptedKey));
+                    alert("☁️ Wallet loaded. Now log in with your password.");
+                } else {
+                    alert("No wallet found in cloud.");
+                }
+            } catch (err) {
+                alert("Load failed: " + err.message);
+            }
+        };
+    </script>
+
+    <script src="https://unpkg.com/i18next@21.6.14/i18next.min.js"></script>
+    <script
+        src="https://unpkg.com/i18next-browser-languagedetector@6.1.4/i18nextBrowserLanguageDetector.min.js"></script>
+    <script src="https://unpkg.com/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://unpkg.com/jquery-i18next@1.2.1/dist/umd/jquery-i18next.min.js"></script>
+    <script>
+        const resources = {
+            en: {
+                translation: {
+                    "welcome": "🚀 Welcome to BasicPay+",
+                    "generate_wallet": "Generate Wallet",
+                    "send_payment": "Send Payment",
+                    "balance": "Balance",
+                    "donation_mode": "Enable Donation Mode",
+                    "ask_bot": "Ask BasicBot"
+                }
+            },
+            hi: {
+                translation: {
+                    "welcome": "🚀 BasicPay+ में आपका स्वागत है",
+                    "generate_wallet": "वॉलेट बनाएँ",
+                    "send_payment": "भुगतान भेजें",
+                    "balance": "शेष राशि",
+                    "donation_mode": "दान मोड सक्षम करें",
+                    "ask_bot": "BasicBot से पूछें"
+                }
+            },
+            es: {
+                translation: {
+                    "welcome": "🚀 Bienvenido a BasicPay+",
+                    "generate_wallet": "Generar Cartera",
+                    "send_payment": "Enviar Pago",
+                    "balance": "Saldo",
+                    "donation_mode": "Activar Modo Donación",
+                    "ask_bot": "Preguntar a BasicBot"
+                }
+            }
+        };
+
+        i18next
+            .use(i18nextBrowserLanguageDetector)
+            .init({
+                resources,
+                fallbackLng: "en",
+                debug: false
+            }, function (err, t) {
+                jqueryI18next.init(i18next, $, { useOptionsAttr: true });
+                $("body").localize();
+            });
+
+        function changeLanguage(lng) {
+            i18next.changeLanguage(lng, () => {
+                $("body").localize();
+            });
         }
-      } catch (err) {
-        alert("Load failed: " + err.message);
-      }
-    };
-  </script>
-
-  <script src="https://unpkg.com/i18next@21.6.14/i18next.min.js"></script>
-  <script src="https://unpkg.com/i18next-browser-languagedetector@6.1.4/i18nextBrowserLanguageDetector.min.js"></script>
-  <script src="https://unpkg.com/jquery@3.6.0/dist/jquery.min.js"></script>
-  <script src="https://unpkg.com/jquery-i18next@1.2.1/dist/umd/jquery-i18next.min.js"></script>
-  <script>
-    const resources = {
-      en: {
-        translation: {
-          "welcome": "🚀 Welcome to BasicPay+",
-          "generate_wallet": "Generate Wallet",
-          "send_payment": "Send Payment",
-          "balance": "Balance",
-          "donation_mode": "Enable Donation Mode",
-          "ask_bot": "Ask BasicBot"
-        }
-      },
-      hi: {
-        translation: {
-          "welcome": "🚀 BasicPay+ में आपका स्वागत है",
-          "generate_wallet": "वॉलेट बनाएँ",
-          "send_payment": "भुगतान भेजें",
-          "balance": "शेष राशि",
-          "donation_mode": "दान मोड सक्षम करें",
-          "ask_bot": "BasicBot से पूछें"
-        }
-      },
-      es: {
-        translation: {
-          "welcome": "🚀 Bienvenido a BasicPay+",
-          "generate_wallet": "Generar Cartera",
-          "send_payment": "Enviar Pago",
-          "balance": "Saldo",
-          "donation_mode": "Activar Modo Donación",
-          "ask_bot": "Preguntar a BasicBot"
-        }
-      }
-    };
-
-    i18next
-      .use(i18nextBrowserLanguageDetector)
-      .init({
-        resources,
-        fallbackLng: "en",
-        debug: false
-      }, function (err, t) {
-        jqueryI18next.init(i18next, $, { useOptionsAttr: true });
-        $("body").localize();
-      });
-
-    function changeLanguage(lng) {
-      i18next.changeLanguage(lng, () => {
-        $("body").localize();
-      });
-    }
-  </script>
+    </script>
 
 
 
 </head>
 
 <body>
-  <div class="container">
-    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+    <div class="container">
+        <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
 
-    <h1>💫 BasicPay+</h1>
-    <div style="margin: 10px 0;">
-      <label for="persona-select"><strong>🎭 Choose Demo Persona:</strong></label>
-      <select id="persona-select" onchange="applyPersona()">
-        <option value="">-- Select a Persona --</option>
-        <option value="remittance">🌍 Remittance Worker</option>
-        <option value="freelancer">💼 Freelancer</option>
-        <option value="ngo">🤝 NGO Collector</option>
-      </select>
-    </div>
+        <div class="hh">
+            <h1><img src="24px.svg" alt=""> BasicPay+</h1>
+            <div class="hh-1">
+            <label for="darkToggle" class="kk">
+                <i class="fa-solid fa-circle-half-stroke"></i>
+            </label>
+            <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()" style="display: none;" />
+            <div class="hh-2">
+                <select onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="es">Español</option>
+                </select>
+            </div>
 
-    <div id="pitch">
-
-      <h2 data-i18n="welcome">🚀 Welcome to BasicPay+</h2>
-      <p>
-        BasicPay+ is a blazing-fast Stellar wallet built for gig workers, small merchants, and underserved communities.
-        It combines smart payments, encrypted wallet storage, microloans, and real-time monitoring in a lightweight PWA.
-      </p>
-      <ul>
-        <li>✅ Generate & encrypt Stellar wallets with AES-GCM security</li>
-        <li>💸 Send payments instantly or schedule recurring transfers</li>
-        <li>📎 Request money with QR codes (freelancer & donation modes)</li>
-        <li>📤 Offer microloans with due dates and repayment tracking</li>
-        <li>📡 Monitor accounts live with real-time updates</li>
-        <li>📊 View interactive balance charts & full transaction history</li>
-        <li>🌍 Works offline with smart queueing and PWA install support</li>
-        <li>🤖 Get help anytime from BasicBot (Qroq AI-powered assistant)</li>
-        <li>☁️ Sync encrypted wallets across devices using Firebase Cloud</li>
-        <li>🗣 Available in 3 languages — English, Hindi, and Spanish</li>
-      </ul>
-    
-      <p><strong>🔁 Try it live — no signup needed. Fund your wallet using Stellar Friendbot and start transacting!</strong></p>
-    
-      <hr>
-    
-      <h3>🌍 Business & Economic Impact</h3>
-      <p>
-        BasicPay+ is built for people who are often excluded from traditional financial systems — freelancers, remittance workers, NGOs, and users in offline or low-connectivity areas.
-      </p>
-    
-      <ul>
-        <li>💸 <strong>Global remittance fees average 6.25%</strong> (World Bank). BasicPay+ enables transfers for <strong>< $0.001</strong> via Stellar.</li>
-        <li>⏱ <strong>Real-time transactions</strong> settle in ~5 seconds — no delays or middlemen.</li>
-        <li>📱 <strong>Bank-free onboarding</strong>: users only need a smartphone to send, receive, or store funds securely.</li>
-        <li>📶 <strong>Offline-first UX</strong>: queuing + service worker support makes it usable in rural zones.</li>
-        <li>📤 <strong>Microloans for local lending</strong>: enable peer-to-peer credit with built-in tracking & reminders.</li>
-      </ul>
-    
-      <h4>💼 Future Revenue & Growth Models</h4>
-      <ul>
-        <li>🤝 <strong>NGO Donation Portals</strong>: Host white-label QR campaigns for charity orgs (SaaS model)</li>
-        <li>📘 <strong>Microloan Ledger as a Service</strong>: Offer tools to community banks and cooperatives</li>
-        <li>📊 <strong>Pro Insights</strong>: Premium charts, analytics & automated reporting for merchants/freelancers</li>
-      </ul>
-    
-      <p><strong>BasicPay+ saves users time and money — while giving the unbanked access to secure, scalable digital finance.</strong></p>
-    
-    </div>
-    
+        </div>
+        </div>
+        <!-- <div style="margin: 10px 0;">
+            <label for="persona-select"><strong>🎭 Choose Demo Persona:</strong></label>
+            <select id="persona-select" onchange="applyPersona()">
+                <option value="">-- Select a Persona --</option>
+                <option value="remittance">🌍 Remittance Worker</option>
+                <option value="freelancer">💼 Freelancer</option>
+                <option value="ngo">🤝 NGO Collector</option>
+            </select>
+        </div> -->
 
 
-    <div id="wallet-section">
-      <button data-i18n="generate_wallet" onclick="generateKeypair()">Generate Wallet</button>
-      <p><strong>Public Key:</strong> <span id="public-key"></span></p>
-      <p><strong>Secret Key:</strong> <span id="secret-key"></span></p>
-      <input type="password" id="encrypt-pass" placeholder="Encrypt Key With Password">
-      <!-- Add this in `index.html` under #encrypt-pass -->
-      <small id="pass-strength" style="color: gray; display: block; margin-top: 4px;"></small>
+        <div id="prelogin-area">
+            <div style="margin: 10px 0;">
+                <label for="persona-select"><strong><i class="fa-solid fa-masks-theater"></i> Choose Demo Persona:</strong></label>
+                <br>
+                <select id="persona-select" onchange="applyPersona()">
+                    <option value="">-- Select a Persona --</option>
+                    <option value="remittance"><i class="fa-solid fa-earth-asia"></i>&nbsp; Remittance Worker</option>
+                    <option value="freelancer"><i class="fa-solid fa-briefcase"></i>&nbsp; Freelancer</option>
+                    <option value="ngo"><i class="fa-solid fa-handshake"></i>&nbsp; NGO Collector</option>
+                </select>
+            </div>
 
-      <button onclick="encryptKey()">Encrypt & Save</button>
-      <button onclick="fundAccount()">Fund Testnet Wallet</button>
-    </div>
+            <div id="wallet-section">
+                <button data-i18n="generate_wallet" onclick="generateKeypair()">Generate Wallet</button>
+                <div class="wallet-section-p">
+                    <p><strong>Public Key:</strong> <br><span id="public-key"></span></p>
+                    <p><strong>Secret Key:</strong> <br><span id="secret-key"></span></p>
+                </div>
+                <label for="encrypt-pass">Encrypt Key With Password</label>
+                <br>
+                <input type="password" id="encrypt-pass" placeholder="">
+                <!-- Add this in `index.html` under #encrypt-pass -->
+                <small id="pass-strength" style="color: gray; display: block; margin-top: 4px;"></small>
 
-    <div id="login-section">
-      <h3>🔐 Load Existing Wallet</h3>
-      <input type="password" id="login-secret" placeholder="Enter Secret Key or Password">
-      <button onclick="loginWallet()">Login</button>
-      <!-- <button onclick="loadCloudWallet()">☁️ Load Cloud Wallet</button> -->
-      <button onclick="saveToCloud(document.getElementById('public-key').textContent)">☁️ Save Wallet to Cloud</button>
-      <button onclick="loadCloudWallet()">☁️ Load Wallet from Cloud</button>
+                <button onclick="encryptKey()">Encrypt & Save</button>
+                <button onclick="fundAccount()">Fund Testnet Wallet</button>
+            </div>
 
-    </div>
+            <div id="login-section">
+                <h3><i class="fa-solid fa-lock"></i> Load Existing Wallet</h3>
+                <input type="password" id="login-secret" placeholder="  Enter Secret Key or Password">
+                <br>
+                <button onclick="loginWallet()">Login</button>
+                <br>
+                <!-- <button onclick="loadCloudWallet()">☁️ Load Cloud Wallet</button> -->
+                <button class="log-btn" onclick="saveToCloud(document.getElementById('public-key').textContent)"><i class="fa-solid fa-cloud"></i> Save Wallet to
+                    Cloud</button> <br>
+                <button class="log-btn" onclick="loadCloudWallet()"><i class="fa-solid fa-cloud"></i> Load Wallet from Cloud</button>
 
-    <div id="wallet-actions" style="display:none;">
-      <h3>💰 Wallet Actions</h3>
-      <p><strong data-i18n="balance">Balance:</strong> <span id="balance"></span> XLM</p>
+            </div>
+        </div>
 
-      <h4>📤 <span data-i18n="send_payment">Send Payment</span></h4>
-      <input type="text" id="dest-address" placeholder="Recipient Public Key">
-      <input type="text" id="amount" placeholder="Amount (XLM)">
-      <input type="text" id="memo" placeholder="Memo (Optional)">
-      <button onclick="sendPayment(document.getElementById('memo').value)">Send</button>
+        <div id="wallet-actions" style="display:none;">
 
-      <!-- Add in index.html under “Send Payment” -->
-      <button onclick="scanQRCode()">📷 Scan QR to Fill</button>
-      <!-- <video id="qr-video" width="300" style="display:none;"></video> -->
-      <div id="qr-video" style="width:300px; display:none;"></div>
+            <!-- NAVIGATION -->
+            <nav id="view-nav">
+                <button onclick="navigateTo('wallet')">Home</button>
+                <button onclick="navigateTo('home')">Wallet</button>
+                <button onclick="navigateTo('recurring')">Recurring</button>
+                <button onclick="navigateTo('loan')">Loan</button>
+                <!-- <button onclick="navigateTo('backup')">Backup</button> -->
+                <button onclick="navigateTo('donet')">Donetion</button>
+                <!-- <button onclick="navigateTo('history')"><i class="fa-solid fa-clock-rotate-left"></i></button> -->
+                <!-- <button onclick="togglePrelogin()">Keys</button> -->
+
+                <button onclick="navigateTo('settings')"><i class="fa-solid fa-gear"></i></button>
+            </nav>
+            <nav id="view-nav-mini" style="display: none;">
+                <button onclick="navigateTo('wallet')"><i class="fa-solid fa-house"></i></button>
+                <button onclick="navigateTo('home')"><i class="fa-solid fa-wallet"></i></button>
+                <button onclick="navigateTo('recurring')"><i class="fa-solid fa-piggy-bank"></i></button>
+                <button onclick="navigateTo('loan')"><i class="fa-solid fa-building-columns"></i></button>
+                <!-- <button onclick="navigateTo('backup')">Backup</button> -->
+                <button onclick="navigateTo('donet')"><i class="fa-solid fa-hand-holding-heart"></i></button>
+                <!-- <button onclick="navigateTo('history')"><i class="fa-solid fa-clock-rotate-left"></i></button> -->
+                <!-- <button onclick="togglePrelogin()">Keys</button> -->
+
+                <button onclick="navigateTo('settings')"><i class="fa-solid fa-gear"></i></button>
+            </nav>
+            <!-- <div class="bal">
+                <p><strong data-i18n="balance">Balance:</strong> <span id="balance"></span> XLM</p>
+                <h4>📊 Balance Chart</h4>
+                <canvas id="balanceChart" height="200"></canvas>
+            </div> -->
+
+            <!-- Home Section -->
+            <div id="view-wallet" class="view" style="display:block">
+                <h2>Welcome to BasicPay+</h2>
+                <p>Choose a feature to get started:</p>
+                <div class="home-features">
+                    <div class="feature-card" onclick="navigateTo('home')">
+                        <h3>💼 Wallet</h3>
+                        <p>Send or request payments.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateTo('recurring')">
+                        <h3>🔁 Recurring</h3>
+                        <p>Manage recurring payments with ease.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateTo('donetion')">
+                        <h3>💳 Loans</h3>
+                        <p>Apply or review micro-loans.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateTo('backup')">
+                        <h3>📥 Donetion</h3>
+                        <p>Donate your wallet securely.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateTo('history')">
+                        <h3>🛡 History</h3>
+                        <p>Check history of your wallet's securely payment.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateTo('backup')">
+                        <h3>🛡 Backup</h3>
+                        <p>Backup and restore your wallet securely.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateTo('help')">
+                        <h3>❓ Help</h3>
+                        <p>Ask questions and get AI assistance.</p>
+                    </div>
+                </div>
+            </div>
 
 
+            <div class="bal">
+                <h3><strong data-i18n="balance">Balance:</strong> <span id="balance"></span> XLM</h3>
+                <!-- <h4>📊 Balance Chart</h4> -->
+                
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="balanceChart"></canvas>
 
-      <h4>⏳ Recurring Payments</h4>
-      <input type="text" id="recurring-dest" placeholder="Recipient Public Key">
-      <input type="text" id="recurring-amount" placeholder="Amount (XLM)">
-      <input type="number" id="interval" placeholder="Interval (sec)">
-      <input type="text" id="recurring-memo" placeholder="Memo (Optional)">
-      <button onclick="scheduleRecurringPayment(
+            </div>
+            <!-- <canvas id="balanceChart" height="283" width="851" style="display: block; box-sizing: border-box; height: 141px; width: 425px;"></canvas> -->
+
+            <!-- height="100" width="200" -->
+
+
+            <div id="view-home" class="view" style="display:none;">
+                <h2><i class="fa-solid fa-sack-dollar"></i> Wallet Actions</h2>
+                <!-- <p><strong data-i18n="balance">Balance:</strong> <span id="balance"></span> XLM</p> -->
+
+                <h4><i class="fa-solid fa-paper-plane"></i> <span data-i18n="send_payment">Send Payment</span></h4>
+                <input class="take" type="text" id="dest-address" placeholder="Recipient Public Key">
+                <input class="take" type="text" id="amount" placeholder="Amount (XLM)">
+                <input class="take" type="text" id="memo" placeholder="Memo (Optional)">
+                <button class="btn" onclick="sendPayment(document.getElementById('memo').value)">Send</button>
+
+                <!-- Add in index.html under “Send Payment” -->
+                <button class="btn" onclick="scanQRCode()"><i class="fa-solid fa-qrcode"></i> Scan QR to Fill</button>
+                <!-- <video id="qr-video" width="300" style="display:none;"></video> -->
+                <div id="qr-video" style="width:300px; display:none;"></div>
+
+
+                <h2><i class="fa-solid fa-paperclip"></i> Request Payment</h2>
+                <input class="take" type="text" id="request-amount" placeholder="Amount (XLM)">
+                <button class="btn" onclick="generateQRCode()">Generate QR</button>
+                <div id="qrcode"></div>
+
+            </div>
+
+
+            <div id="view-recurring" class="view" style="display:none;">
+                <h2><i class="fa-solid fa-hourglass-start"></i> Recurring Payments</h2>
+                <input class="take" type="text" id="recurring-dest" placeholder="Recipient Public Key">
+                <input class="take" type="text" id="recurring-amount" placeholder="Amount (XLM)">
+                <input class="take" type="number" id="interval" placeholder="Interval (sec)">
+                <input class="take" type="text" id="recurring-memo" placeholder="Memo (Optional)">
+                <button class="btn" onclick="scheduleRecurringPayment(
         document.getElementById('recurring-dest').value,
         document.getElementById('recurring-amount').value,
         parseInt(document.getElementById('interval').value),
         document.getElementById('recurring-memo').value
       )">Start Recurring</button>
-      <button onclick="stopRecurringPayments()">Stop All</button>
+                <button class="btn" onclick="stopRecurringPayments()">Stop All</button>
+            </div>
 
-      <h4>📎 Request Payment</h4>
-      <input type="text" id="request-amount" placeholder="Amount (XLM)">
-      <button onclick="generateQRCode()">Generate QR</button>
-      <div id="qrcode"></div>
+            <div id="view-loan" class="view" style="display:none;">
+                <h2><i class="fa-solid fa-money-bill"></i> Microloans</h2>
+                <input class="take" type="text" id="loan-recipient" placeholder="Recipient Public Key">
+                <input class="take" type="text" id="loan-amount" placeholder="Loan Amount (XLM)">
+                <input class="take" type="date" id="loan-due" placeholder="Due Date">
+                <input class="take" type="text" id="loan-memo" placeholder="Memo (Optional)">
+                <button class="btn" onclick="sendMicroloan()">Send Loan</button>
 
-      <h4>💸 Microloans</h4>
-      <input type="text" id="loan-recipient" placeholder="Recipient Public Key">
-      <input type="text" id="loan-amount" placeholder="Loan Amount (XLM)">
-      <input type="date" id="loan-due" placeholder="Due Date">
-      <input type="text" id="loan-memo" placeholder="Memo (Optional)">
-      <button onclick="sendMicroloan()">Send Loan</button>
+                <h4><i class="fa-solid fa-receipt"></i> Loan Ledger</h4>
+                <div id="loan-ledger"></div>
+            </div>
 
-      <h4>📒 Loan Ledger</h4>
-      <div id="loan-ledger"></div>
+            <div id="view-backup" class="view" style="display:none;">
+                <h2><i class="fa-solid fa-file-export"></i> Export Wallet</h2>
+                <button onclick="exportWalletData()">Download Backup</button>
+                <h2><i class="fa-solid fa-file-import"></i> Import Wallet</h2>
+                <input class="take" type="file" accept=".json" onchange="importWalletData(event)">
+            </div>
+
+            <div id="view-settings" class="view" style="display:none;">
+                <h2><i class="fa-solid fa-gears"></i> Settings</h2>
+                <div class="settings-buttons">
+                    <button onclick="togglePrelogin()"><i class="fa-solid fa-key"></i> Show Keys</button>
+                    <button onclick="navigateTo('backup')"><i class="fa-solid fa-cloud-arrow-down"></i> Backup Wallet</button>
+                    <button onclick="navigateTo('history')"><i class="fa-solid fa-book"></i> History</button>
+                    <button onclick="logout()"><i class="fa-solid fa-power-off"></i> Logout</button>
 
 
-      <h4>📥 Donations</h4>
-      <label><input type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable Donation Mode</label>
-      <button onclick="generateDonationQRCode()">Generate Donation QR</button>
-      <div id="donation-qr"></div>
+                </div>
+                <div id="key-display" style="margin-top: 10px; display: none;">
+                  <p><strong>Public Key:</strong> <span id="display-pubkey"></span></p>
+                  <p><strong>Secret Key:</strong> <span id="display-secret"></span></p>
+                </div>
+              </div>
+              
 
 
-      <h4>📊 Balance Chart</h4>
-      <canvas id="balanceChart" height="200"></canvas>
+            <div id="view-donet" class="view" style="display:none;">
+                <h2><i class="fa-solid fa-hand-holding-dollar"></i> Donations</h2>
+                <label><input class="take" type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable Donation
+                    Mode</label>
+                <button class="btn" onclick="generateDonationQRCode()">Generate Donation QR</button>
+                <div id="donation-qr"></div>
+            </div>
 
-      <h4>📑 Transaction History</h4>
-      <div id="transaction-history"></div>
-      <h4>📤 Export Wallet</h4>
-      <button onclick="exportWalletData()">Download Backup</button>
-      <h4>📥 Import Wallet</h4>
-      <input type="file" accept=".json" onchange="importWalletData(event)">
-      
+            <div id="view-help" class="view" style="display:none;">
 
+                <h4><i class="fa-solid fa-robot"></i> <span data-i18n="ask_bot">Ask BasicBot</span></h4>
+                <div id="assistant-box">
+                    <input type="text" id="assistant-input" placeholder="Ask me anything about the wallet..." />
+                    <button onclick="askAssistant()">Ask</button>
+                    <div id="assistant-response"></div>
+
+                    <div id="assistant-suggestions" style="margin-top: 20px;">
+                        <p><strong>💡 Try asking:</strong></p>
+                        <ul style="padding-left: 20px;">
+                            <li><a href="#" onclick="askDemo('How do I receive donations?')">How do I receive
+                                    donations?</a></li>
+                            <li><a href="#" onclick="askDemo('What does recurring payment do?')">What does recurring
+                                    payment do?</a>
+                            </li>
+                            <li><a href="#" onclick="askDemo('How to send a microloan with a due date?')">How to send a
+                                    microloan with
+                                    a due
+                                    date?</a></li>
+                            <li><a href="#" onclick="askDemo('What happens when I\'m offline?')">What happens when I'm
+                                    offline?</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+            <!-- <h4>📊 Balance Chart</h4>
+      <canvas id="balanceChart" height="200"></canvas> -->
+            <div id="view-history" class="view" style="display:none;">
+
+                <h2><i class="fa-solid fa-clock-rotate-left"></i> Transaction History</h2>
+                <div id="transaction-history"></div>
+            </div>
+
+            
+        </div>
+
+
+
+
+
+        <div style="text-align: right;">
+           
+
+            <div id="install-box" style="display:none; text-align:center; margin-top:20px;">
+                <button onclick="installApp()">📲 Install BasicPay+</button>
+            </div>
+
+        </div>
+        <div id="log"></div>
     </div>
-      
 
 
 
-    <div style="text-align: right;">
-      <label>
-        🌙 Dark Mode
-        <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()" />
-      </label>
-      <div style="margin-top:10px;">
-        🌐 Language:
-        <select onchange="changeLanguage(this.value)">
-          <option value="en">English</option>
-          <option value="hi">हिन्दी</option>
-          <option value="es">Español</option>
-        </select>
-      </div>
-
-      <div id="install-box" style="display:none; text-align:center; margin-top:20px;">
-        <button onclick="installApp()">📲 Install BasicPay+</button>
-      </div>
-
-    </div>
-    <div id="log"></div>
-  </div>
 
 
-  <h4>🤖 <span data-i18n="ask_bot">Ask BasicBot</span></h4>
-  <div id="assistant-box">
-    <input type="text" id="assistant-input" placeholder="Ask me anything about the wallet..." />
-    <button onclick="askAssistant()">Ask</button>
-    <div id="assistant-response"></div>
-
-    <div id="assistant-suggestions" style="margin-top: 20px;">
-      <p><strong>💡 Try asking:</strong></p>
-      <ul style="padding-left: 20px;">
-        <li><a href="#" onclick="askDemo('How do I receive donations?')">How do I receive donations?</a></li>
-        <li><a href="#" onclick="askDemo('What does recurring payment do?')">What does recurring payment do?</a></li>
-        <li><a href="#" onclick="askDemo('How to send a microloan with a due date?')">How to send a microloan with a due
-            date?</a></li>
-        <li><a href="#" onclick="askDemo('What happens when I\'m offline?')">What happens when I'm offline?</a></li>
-      </ul>
-    </div>
-  </div>
-
-
-  <!-- 
+    <!-- 
   <script src="utils.js"></script>
   <script src="script.js"></script> -->
+
+
+    <script>
+        function navigateTo(view) {
+            window.location.hash = view;
+        }
+
+        function showViewFromHash() {
+            const views = document.querySelectorAll('.view');
+            views.forEach(v => v.style.display = 'none');
+            const hash = window.location.hash.slice(1) || 'wallet';
+            const active = document.getElementById(`view-${hash}`);
+            if (active) active.style.display = 'block';
+        }
+
+        function showPostLoginUI() {
+            document.getElementById('post-login').style.display = 'block';
+            document.getElementById('before-login').style.display = 'none';
+            showViewFromHash();
+        }
+
+        window.addEventListener('hashchange', showViewFromHash);
+        window.addEventListener('DOMContentLoaded', showViewFromHash);
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("wallet-actions").style.display = "none";
+            document.getElementById("prelogin-area").style.display = "block";
+        });
+
+
+
+    </script>
+
+
+  
+
+
+
+
+
+
 </body>
 
 </html>
