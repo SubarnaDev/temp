@@ -7,10 +7,41 @@
     <title>BasicPay+ - Stellar Wallet</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1a73e8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="shortcut icon" href="24px.svg" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="min.css">
+
+
+
+    <!-- Metadata -->
+    <meta name="title" content="BasicPay+ — Stellar Wallet for Everyone">
+    <meta name="description"
+        content="A fast, secure, and multilingual Stellar wallet for freelancers, NGOs & remittance users. Works offline and supports QR payments, microloans, recurring transfers & cloud backup.">
+    <meta name="author" content="Phoenix">
+    <meta name="theme-color" content="#1a73e8">
+
+    <!-- Open Graph (for social previews: Facebook, LinkedIn, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://temp-kappa-beige.vercel.app/">
+    <meta property="og:title" content="BasicPay+ — Stellar Wallet for Everyone">
+    <meta property="og:description"
+        content="A fast, secure Stellar wallet supporting QR codes, microloans, recurring payments, and offline access.">
+    <meta property="og:image" content="https://temp-kappa-beige.vercel.app/24px.svg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://temp-kappa-beige.vercel.app/">
+    <meta name="twitter:title" content="BasicPay+ — Stellar Wallet for Everyone">
+    <meta name="twitter:description"
+        content="A multilingual, PWA Stellar wallet built for small merchants, NGOs and remote users.">
+    <meta name="twitter:image" content="https://temp-kappa-beige.vercel.app/24px.svg">
+
+
+
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/10.4.0/stellar-sdk.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -155,19 +186,19 @@
         <div class="hh">
             <h1><img src="24px.svg" alt=""> BasicPay+</h1>
             <div class="hh-1">
-            <label for="darkToggle" class="kk">
-                <i class="fa-solid fa-circle-half-stroke"></i>
-            </label>
-            <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()" style="display: none;" />
-            <div class="hh-2">
-                <select onchange="changeLanguage(this.value)">
-                    <option value="en">English</option>
-                    <option value="hi">हिन्दी</option>
-                    <option value="es">Español</option>
-                </select>
-            </div>
+                <label for="darkToggle" class="kk">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                </label>
+                <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()" style="display: none;" />
+                <div class="hh-2">
+                    <select onchange="changeLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी</option>
+                        <option value="es">Español</option>
+                    </select>
+                </div>
 
-        </div>
+            </div>
         </div>
         <!-- <div style="margin: 10px 0;">
             <label for="persona-select"><strong>🎭 Choose Demo Persona:</strong></label>
@@ -182,7 +213,8 @@
 
         <div id="prelogin-area">
             <div style="margin: 10px 0;">
-                <label for="persona-select"><strong><i class="fa-solid fa-masks-theater"></i> Choose Demo Persona:</strong></label>
+                <label for="persona-select"><strong><i class="fa-solid fa-masks-theater"></i> Choose Demo
+                        Persona:</strong></label>
                 <br>
                 <select id="persona-select" onchange="applyPersona()">
                     <option value="">-- Select a Persona --</option>
@@ -215,9 +247,11 @@
                 <button onclick="loginWallet()">Login</button>
                 <br>
                 <!-- <button onclick="loadCloudWallet()">☁️ Load Cloud Wallet</button> -->
-                <button class="log-btn" onclick="saveToCloud(document.getElementById('public-key').textContent)"><i class="fa-solid fa-cloud"></i> Save Wallet to
+                <button class="log-btn" onclick="saveToCloud(document.getElementById('public-key').textContent)"><i
+                        class="fa-solid fa-cloud"></i> Save Wallet to
                     Cloud</button> <br>
-                <button class="log-btn" onclick="loadCloudWallet()"><i class="fa-solid fa-cloud"></i> Load Wallet from Cloud</button>
+                <button class="log-btn" onclick="loadCloudWallet()"><i class="fa-solid fa-cloud"></i> Load Wallet from
+                    Cloud</button>
 
             </div>
         </div>
@@ -295,7 +329,7 @@
             <div class="bal">
                 <h3><strong data-i18n="balance">Balance:</strong> <span id="balance"></span> XLM</h3>
                 <!-- <h4>📊 Balance Chart</h4> -->
-                
+
             </div>
             <div class="chart-wrapper">
                 <canvas id="balanceChart"></canvas>
@@ -368,23 +402,25 @@
                 <h2><i class="fa-solid fa-gears"></i> Settings</h2>
                 <div class="settings-buttons">
                     <button onclick="togglePrelogin()"><i class="fa-solid fa-key"></i> Show Keys</button>
-                    <button onclick="navigateTo('backup')"><i class="fa-solid fa-cloud-arrow-down"></i> Backup Wallet</button>
+                    <button onclick="navigateTo('backup')"><i class="fa-solid fa-cloud-arrow-down"></i> Backup
+                        Wallet</button>
                     <button onclick="navigateTo('history')"><i class="fa-solid fa-book"></i> History</button>
                     <button onclick="logout()"><i class="fa-solid fa-power-off"></i> Logout</button>
 
 
                 </div>
                 <div id="key-display" style="margin-top: 10px; display: none;">
-                  <p><strong>Public Key:</strong> <span id="display-pubkey"></span></p>
-                  <p><strong>Secret Key:</strong> <span id="display-secret"></span></p>
+                    <p><strong>Public Key:</strong> <span id="display-pubkey"></span></p>
+                    <p><strong>Secret Key:</strong> <span id="display-secret"></span></p>
                 </div>
-              </div>
-              
+            </div>
+
 
 
             <div id="view-donet" class="view" style="display:none;">
                 <h2><i class="fa-solid fa-hand-holding-dollar"></i> Donations</h2>
-                <label><input class="take" type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable Donation
+                <label><input class="take" type="checkbox" id="donationToggle" onchange="toggleDonationMode()"> Enable
+                    Donation
                     Mode</label>
                 <button class="btn" onclick="generateDonationQRCode()">Generate Donation QR</button>
                 <div id="donation-qr"></div>
@@ -430,7 +466,7 @@
                 <div id="transaction-history"></div>
             </div>
 
-            
+
         </div>
 
 
@@ -438,7 +474,7 @@
 
 
         <div style="text-align: right;">
-           
+
 
             <div id="install-box" style="display:none; text-align:center; margin-top:20px;">
                 <button onclick="installApp()"><i class="fa-solid fa-download"></i> Install BasicPay+</button>
@@ -488,7 +524,7 @@
     </script>
 
 
-  
+
 
 
 
