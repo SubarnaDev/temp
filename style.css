@@ -60,7 +60,7 @@ body {
     padding: 10px;
     border-radius: 8px;
     max-height: 150px;
-    overflow-y: auto;
+    overflow: auto;
     font-size: 0.9em;
   }
   
